@@ -1,17 +1,17 @@
 package cn.fllday.learn.auth.service;
 
+import cn.fllday.learn.auth.config.security.token.TokenService;
 import cn.fllday.learn.component.redis.RedisUtils;
 import cn.fllday.learn.constant.Constant;
 import cn.fllday.learn.exception.CaptchaExpireException;
 import cn.fllday.learn.exception.UserPasswordNotMatchException;
-import cn.fllday.learn.pojo.user.vo.LoginUser;
+import cn.fllday.learn.auth.config.security.custom.LoginUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.token.TokenService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

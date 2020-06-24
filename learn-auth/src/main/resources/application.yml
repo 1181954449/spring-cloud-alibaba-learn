@@ -1,0 +1,13 @@
+server:
+  port: 20070
+spring:
+  application:
+    name: learn-auth
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+      config:
+        server-addr: ${spring.cloud.nacos.discovery.server-addr}
+        namespace: 30b89855-8cfc-4dc4-8ccc-0aa3b38e4cd8
+        group: learn

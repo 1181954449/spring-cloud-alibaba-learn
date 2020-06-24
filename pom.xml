@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>cn.fllday.cloud</groupId>
+    <artifactId>spring-cloud-alibaba-learn</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>common-api</module>
+        <module>learn-component</module>
+        <module>learn-user</module>
+        <module>learn-order</module>
+        <module>learn-gateway</module>
+        <module>learn-auth</module>
+    </modules>
+
+    <!-- 定义版本 -->
+    <properties>
+        <spring-cloud-alibaba-learn.version>1.0-SNAPSHOT</spring-cloud-alibaba-learn.version>
+    </properties>
+
+
+<!-- 版本对应关系 alibabaCloud 对应 springcloud 版本-->
+<!--
+Spring Cloud Version            Spring Cloud Alibaba Version    Spring Boot Version
+
+Spring Cloud Hoxton              2.2.x.RELEASE                  2.2.x.RELEASE
+
+Spring Cloud Greenwich           2.1.x.RELEASE                  2.1.x.RELEASE
+
+Spring Cloud Finchley            2.0.x.RELEASE                  2.0.x.RELEASE
+
+Spring Cloud Edgware             1.5.x.RELEASE                  1.5.x.RELEASE
+
+-->
+
+<!--  SpringCloud 对应 SpringBoot 版本  -->
+
+<!--
+
+Release Train	            Boot Version
+Hoxton                      2.2.x
+
+Greenwich                   2.1.x
+
+Finchley                    2.0.x
+
+Edgware                     1.5.x
+
+Dalston                     1.5.x
+
+-->
+
+<!--  定义SpringAlibaba, SpringCloud， SpringBoot版本   -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>2.2.1.RELEASE</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>Hoxton.SR1</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>2.2.1.RELEASE</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+<!--    定义公共组件-->
+    <dependencies>
+
+    </dependencies>
+
+</project>

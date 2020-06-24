@@ -1,0 +1,12 @@
+server:
+  port: 20050
+spring:
+  application:
+    name: learn-user
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+      config:
+        namespace: 30b89855-8cfc-4dc4-8ccc-0aa3b38e4cd8
+        group: learn

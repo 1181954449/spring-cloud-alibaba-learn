@@ -1,60 +1,127 @@
 package cn.fllday.learn.pojo.user;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import javax.persistence.Column;
+import javax.persistence.Table;
+import java.util.Date;
 
-/**
- * @Author: gssznb
- */
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Table(name = "sys_role")
 public class SysRole {
-
-    private static final long serialVersionUID = 1L;
-
-    /**
-     * 角色序号
-     */
-    private Long roleId;
+    private Long id;
 
     /**
-     * 角色名称
+     * 角色名
      */
-    private String roleName;
+    private String name;
+
+    private String description;
+
+    private Boolean available;
 
     /**
-     * 角色权限
+     * 添加时间
      */
-    private String roleKey;
+    @Column(name = "create_time")
+    private Date createTime;
 
     /**
-     * 角色排序
+     * 更新时间
      */
-    private String roleSort;
+    @Column(name = "update_time")
+    private Date updateTime;
 
     /**
-     * 数据范围
-     * 1=所有数据权限,2=自定义数据权限,3=本部门数据权限,4=本部门及以下数据权限
+     * @return id
      */
-    private String dataScope;
+    public Long getId() {
+        return id;
+    }
 
     /**
-     * 角色状态
-     * 0=正常,1=停用
+     * @param id
      */
-    private String status;
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    /** 删除标志（0代表存在 2代表删除） */
-    private String delFlag;
+    /**
+     * 获取角色名
+     *
+     * @return name - 角色名
+     */
+    public String getName() {
+        return name;
+    }
 
-    /** 用户是否存在此角色标识 默认不存在 */
-    transient private boolean flag = false;
+    /**
+     * 设置角色名
+     *
+     * @param name 角色名
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
 
-    /** 菜单组 */
-    transient private Long[] menuIds;
+    /**
+     * @return description
+     */
+    public String getDescription() {
+        return description;
+    }
 
-    /** 部门组（数据权限） */
-    transient private Long[] deptIds;
+    /**
+     * @param description
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    /**
+     * @return available
+     */
+    public Boolean getAvailable() {
+        return available;
+    }
+
+    /**
+     * @param available
+     */
+    public void setAvailable(Boolean available) {
+        this.available = available;
+    }
+
+    /**
+     * 获取添加时间
+     *
+     * @return create_time - 添加时间
+     */
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    /**
+     * 设置添加时间
+     *
+     * @param createTime 添加时间
+     */
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    /**
+     * 获取更新时间
+     *
+     * @return update_time - 更新时间
+     */
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    /**
+     * 设置更新时间
+     *
+     * @param updateTime 更新时间
+     */
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
 }

@@ -7,6 +7,25 @@ spring:
     nacos:
       discovery:
         server-addr: 127.0.0.1:8848
+        namespace: 30b89855-8cfc-4dc4-8ccc-0aa3b38e4cd8
+        group: learn
       config:
         namespace: 30b89855-8cfc-4dc4-8ccc-0aa3b38e4cd8
         group: learn
+        file-extension: yaml
+  datasource:
+    username: root
+    password: ROOT_12root
+    url: jdbc:mysql://www.fllday.cn:3306/learn?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8&useSSL=true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    druid:
+      stat-view-servlet:
+        login-username: gss
+        login-password: 584521
+        url-pattern: /druid/*
+mybatis:
+  mapper-locations:
+    - classpath:mapper/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true

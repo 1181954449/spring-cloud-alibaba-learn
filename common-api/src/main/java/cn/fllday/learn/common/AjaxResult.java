@@ -1,15 +1,17 @@
 package cn.fllday.learn.common;
 
+import com.alibaba.fastjson.JSON;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.io.Serializable;
 
 /**
  * @Author: gssznb
  */
 @Data
-public class AjaxResult {
+@NoArgsConstructor
+public class AjaxResult<T> implements Serializable {
 
     private int status;
 
@@ -17,40 +19,46 @@ public class AjaxResult {
 
     private String exMsg;
 
-    private Map<String,Object> data;
+    private T data;
 
-    private AjaxResult(ServiceExceptionEnum exceptionEnum, String exMsg) {
+    private AjaxResult(ServiceExceptionEnum exceptionEnum, String exMsg, T data) {
         this.status = exceptionEnum.getStatusCode();
         this.msg = exceptionEnum.getMsg();
         this.exMsg = exMsg;
+        this.data = data;
     }
 
     /**
      * 成功返回
      * @return
      */
-    public static AjaxResult success(){
-        return new AjaxResult(ServiceExceptionEnum.SUCCESS, null);
+    public static <T> AjaxResult<T> success(){
+        return new AjaxResult<T>(ServiceExceptionEnum.SUCCESS, null, null);
     }
 
-    public static AjaxResult error(){
-        return new AjaxResult(ServiceExceptionEnum.SYS_ERROR, null);
+    public static <T> AjaxResult<T> success(T data){
+        return new AjaxResult<T>(ServiceExceptionEnum.SUCCESS, null, data);
     }
 
-    public static AjaxResult error(String exMsg) {
-        return new AjaxResult(ServiceExceptionEnum.SYS_ERROR, exMsg);
+    public static <T> AjaxResult<T> error(){
+        return new AjaxResult<T>(ServiceExceptionEnum.SYS_ERROR, null, null);
     }
 
-    public static AjaxResult error(ServiceExceptionEnum errorEnum, String exMsg) {
-        return new AjaxResult(errorEnum, exMsg);
+    public static <T> AjaxResult<T> error(ServiceExceptionEnum exceptionEnum) {
+        return new AjaxResult<T>(exceptionEnum, "", null);
     }
 
-    public AjaxResult put(String key, Object value) {
-        if (data == null) {
-            data = new HashMap<>();
-        }
-        data.put(key, value);
-        return this;
+    public static <T> AjaxResult<T> error(String exMsg) {
+        return new AjaxResult<T>(ServiceExceptionEnum.SYS_ERROR, exMsg, null);
     }
 
+    public static <T> AjaxResult<T> error(ServiceExceptionEnum errorEnum, String exMsg) {
+        return new AjaxResult<T>(errorEnum, exMsg, null);
+    }
+
+
+    @Override
+    public String toString() {
+        return JSON.toJSONString(this);
+    }
 }

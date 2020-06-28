@@ -13,6 +13,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>learn-component-redis</module>
+        <module>learn-component-tk-mybatis</module>
     </modules>
 
 

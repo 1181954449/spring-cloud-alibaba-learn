@@ -1,6 +1,6 @@
 package cn.fllday.learn.auth.config.security;
 
-import cn.fllday.learn.auth.config.security.filter.JwtAuthenticationTokenFilter;
+import cn.fllday.learn.auth.config.filter.JwtAuthenticationTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,11 +8,15 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
@@ -40,6 +44,28 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private LogoutSuccessHandler logoutSuccessHandler;
 
+    /**
+     * 认证失败逻辑处理类
+     */
+    @Autowired
+    private AuthenticationFailureHandler authenticationFailureHandler;
+
+    /**
+     * 认证成功逻辑处理类
+     */
+    @Autowired
+    private AuthenticationSuccessHandler authenticationSuccessHandler;
+
+    /**
+     * 未授权逻辑处理类
+     */
+    @Autowired
+    private AccessDeniedHandler accessDeniedHandler;
+
+    /**
+     * token 过滤器类
+     */
+    @Autowired
     private JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
 
 
@@ -50,6 +76,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(userDetailsService)
                 // 配置密码加密
                 .passwordEncoder(encoder());
+        super.configure(auth);
     }
 
 
@@ -61,16 +88,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
+                .httpBasic()
+                .authenticationEntryPoint(authenticationEntryPoint)
+                .and()
+                .formLogin()
+                .loginProcessingUrl("/login")
+                .usernameParameter("username")
+                .passwordParameter("password")
+                .successHandler(authenticationSuccessHandler)
+                .failureHandler(authenticationFailureHandler)
+                .and()
+                .exceptionHandling().accessDeniedHandler(accessDeniedHandler)
+                .and()
                 .authorizeRequests()
-                .antMatchers("/login", "/captchaImage").anonymous()
-                .antMatchers(HttpMethod.GET, "/*.html", "/**/*.html", "/**/*.js", "/**/*.css").permitAll()
-                .antMatchers("/profile/**").anonymous()
-                .antMatchers("/common/download**").anonymous()
-                .antMatchers("/swagger-ui.html").anonymous()
-                .antMatchers("/swagger-resources/**").anonymous()
-                .antMatchers("/webjars/**").anonymous()
-                .antMatchers("/*/api-docs").anonymous()
-                .antMatchers("/druid/**").anonymous()
+                .antMatchers(  "/captchaImage").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .headers().frameOptions().disable();
@@ -78,6 +109,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.logout().logoutUrl("/logout").logoutSuccessHandler(logoutSuccessHandler);
 
         http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
+
+    }
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        super.configure(web);
     }
 
     @Bean

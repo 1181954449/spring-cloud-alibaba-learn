@@ -27,3 +27,7 @@ spring:
         max-active: 8
         min-idle: 0
         max-wait: 300000
+  freemarker:
+    request-context-attribute: request
+    suffix: .ftl
+    cache: false

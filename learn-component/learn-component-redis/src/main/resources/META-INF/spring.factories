@@ -1,2 +1,3 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-cn.fllday.learn.component.redis.RedisUtils
+cn.fllday.learn.component.redis.RedisUtils,\
+cn.fllday.learn.component.redis.RedisConfig

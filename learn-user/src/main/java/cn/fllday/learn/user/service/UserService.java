@@ -16,6 +16,14 @@ public interface UserService {
      */
     SysUser getUserByUsername(String username);
 
+
+    /**
+     * 根据手机号码查询
+     * @param phone
+     * @return
+     */
+    SysUser getUserByPhone(String phone);
+
     /**
      * 根据 用户 id 查询属于自己的所有权限
      * @param id 用户id

@@ -15,6 +15,7 @@
         <module>learn-order</module>
         <module>learn-gateway</module>
         <module>learn-auth</module>
+        <module>learn-auth2</module>
     </modules>
 
     <!-- 定义版本 -->

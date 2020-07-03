@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
     <description>授权认证服务器</description>
 
-    <artifactId>learn-auth</artifactId>
+    <artifactId>learn-auth2</artifactId>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -74,6 +74,11 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
+        <!--    freemaker   -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-freemarker</artifactId>
+        </dependency>
         <!-- 实现对数据库连接池的自动化配置 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

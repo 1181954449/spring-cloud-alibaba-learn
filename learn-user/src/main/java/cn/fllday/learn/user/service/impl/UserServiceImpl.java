@@ -31,6 +31,14 @@ public class UserServiceImpl implements UserService {
         return sysUser;
     }
 
+    @Override
+    public SysUser getUserByPhone(String phone) {
+        Example example = new Example(SysUser.class);
+        example.createCriteria()
+                .andEqualTo("phonenumber", phone)
+                .andEqualTo("delFlag", "0");
+        return sysUserMapper.selectOneByExample(example);
+    }
 
     @Override
     public List<String> queryPermsByUserId(Long id) {

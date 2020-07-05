@@ -23,8 +23,14 @@ import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.CompositeTokenGranter;
 import org.springframework.security.oauth2.provider.OAuth2RequestFactory;
 import org.springframework.security.oauth2.provider.TokenGranter;
+import org.springframework.security.oauth2.provider.client.ClientCredentialsTokenGranter;
 import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
+import org.springframework.security.oauth2.provider.code.AuthorizationCodeTokenGranter;
 import org.springframework.security.oauth2.provider.code.JdbcAuthorizationCodeServices;
+import org.springframework.security.oauth2.provider.endpoint.AuthorizationEndpoint;
+import org.springframework.security.oauth2.provider.implicit.ImplicitTokenGranter;
+import org.springframework.security.oauth2.provider.password.ResourceOwnerPasswordTokenGranter;
+import org.springframework.security.oauth2.provider.refresh.RefreshTokenGranter;
 import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
@@ -117,6 +123,11 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
     private OAuth2CustomTokenEnhancer oAuth2CustomTokenEnhancer;
 
 
+    private JdbcAuthorizationCodeServices jdbcAuthorizationCodeServices(){
+        return new JdbcAuthorizationCodeServices(dataSource);
+    }
+
+
     /**
      * 配置端点访问策略。
      *
@@ -126,17 +137,36 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
         // 添加自定义权限校验方式 以及 grant_type 类型
-        List<TokenGranter> tokenGranters = getTokenGranters(endpoints.getTokenServices(),
-                                                endpoints.getClientDetailsService(), endpoints.getOAuth2RequestFactory());
-
+        List<TokenGranter> tokenGranters = getDefaultTokenGranters(endpoints.getTokenServices(),
+                                                mapJdbcClientDetailsService, endpoints.getOAuth2RequestFactory());
+        // 设置授权码的存储方式
+        endpoints.authorizationCodeServices(jdbcAuthorizationCodeServices());
         endpoints.tokenGranter(new CompositeTokenGranter(tokenGranters));
-
         endpoints.authenticationManager(authenticationManager)
             .userDetailsService(userDetailsService)
             .tokenStore(redisTokenStore())
             .tokenEnhancer(oAuth2CustomTokenEnhancer);
 
         endpoints.pathMapping("/oauth/confirm_access", "/custom/confirm_access");
+    }
+
+    @Autowired
+    private DataSource dataSource;
+
+
+    private List<TokenGranter> getDefaultTokenGranters(AuthorizationServerTokenServices tokenServices,
+                                                       ClientDetailsService clientDetailsService,
+                                                       OAuth2RequestFactory requestFactory) {
+        List<TokenGranter> tokenGranters = new ArrayList();
+        tokenGranters.add(new AuthorizationCodeTokenGranter(tokenServices,jdbcAuthorizationCodeServices() , clientDetailsService, requestFactory));
+        tokenGranters.add(new RefreshTokenGranter(tokenServices, clientDetailsService, requestFactory));
+        ImplicitTokenGranter implicit = new ImplicitTokenGranter(tokenServices, clientDetailsService, requestFactory);
+        tokenGranters.add(implicit);
+        tokenGranters.add(new ClientCredentialsTokenGranter(tokenServices, clientDetailsService, requestFactory));
+        if (this.authenticationManager != null) {
+            tokenGranters.add(new ResourceOwnerPasswordTokenGranter(this.authenticationManager, tokenServices, clientDetailsService, requestFactory));
+        }
+        return tokenGranters;
     }
 
 
@@ -152,9 +182,22 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
                                                 OAuth2RequestFactory requestFactory){
         return new ArrayList<>(Arrays.asList(
                 phonePasswordTokenGranter(tokenServices, clientDetailsService, requestFactory),
-                phoneSmsCodeTokenGranter(tokenServices, clientDetailsService, requestFactory)
+                phoneSmsCodeTokenGranter(tokenServices, clientDetailsService, requestFactory),
+                new AuthorizationCodeTokenGranter(tokenServices, new JdbcAuthorizationCodeServices(dataSource),
+                                                    clientDetailsService, requestFactory),
+                new ResourceOwnerPasswordTokenGranter(authenticationManager, tokenServices,
+                                                        clientDetailsService, requestFactory),
+                new ImplicitTokenGranter(tokenServices, clientDetailsService, requestFactory),
+                new ClientCredentialsTokenGranter(tokenServices, clientDetailsService, requestFactory),
+                new RefreshTokenGranter(tokenServices, clientDetailsService, requestFactory)
         ));
     }
+
+
+
+
+
+
 
     /**
      * 自定义 手机密码登录
@@ -163,7 +206,6 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
      * @param requestFactory
      * @return
      */
-    @Bean
     public PhonePasswordTokenGranter phonePasswordTokenGranter(AuthorizationServerTokenServices tokenServices,
                                                                ClientDetailsService clientDetailsService,
                                                                OAuth2RequestFactory requestFactory) {
@@ -177,7 +219,6 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
      * @param requestFactory
      * @return
      */
-    @Bean
     public PhoneSmsCodeTokenGranter phoneSmsCodeTokenGranter(AuthorizationServerTokenServices tokenServices,
                                                                ClientDetailsService clientDetailsService,
                                                                OAuth2RequestFactory requestFactory) {

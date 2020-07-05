@@ -22,20 +22,20 @@ public class OAuth2Controller {
     @Autowired
     TokenEndpoint tokenEndpoint;
 
-
-    @ResponseBody
-    @GetMapping(value = "/token")
-    public AjaxResult<OAuth2AccessToken> getAccessToken(Principal principal, @RequestParam Map<String, String> parameters) throws HttpRequestMethodNotSupportedException {
-        OAuth2AccessToken body = tokenEndpoint.getAccessToken(principal, parameters).getBody();
-        return AjaxResult.success(body);
-    }
-
-    @ResponseBody
-    @PostMapping(value = "/token")
-    public AjaxResult<OAuth2AccessToken> postAccessToken(Principal principal, @RequestParam Map<String, String> parameters) throws HttpRequestMethodNotSupportedException {
-        OAuth2AccessToken body = tokenEndpoint.postAccessToken(principal, parameters).getBody();
-        return AjaxResult.success(body);
-    }
+//
+//    @ResponseBody
+//    @GetMapping(value = "/token")
+//    public AjaxResult<OAuth2AccessToken> getAccessToken(Principal principal, @RequestParam Map<String, String> parameters) throws HttpRequestMethodNotSupportedException {
+//        OAuth2AccessToken body = tokenEndpoint.getAccessToken(principal, parameters).getBody();
+//        return AjaxResult.success(body);
+//    }
+//
+//    @ResponseBody
+//    @PostMapping(value = "/token")
+//    public AjaxResult<OAuth2AccessToken> postAccessToken(Principal principal, @RequestParam Map<String, String> parameters) throws HttpRequestMethodNotSupportedException {
+//        OAuth2AccessToken body = tokenEndpoint.postAccessToken(principal, parameters).getBody();
+//        return AjaxResult.success(body);
+//    }
 
 
 }

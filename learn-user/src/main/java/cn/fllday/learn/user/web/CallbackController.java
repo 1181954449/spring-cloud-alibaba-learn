@@ -22,7 +22,7 @@ public class CallbackController {
 
     private final String CLIENT_ID = "clientapp";
 
-    private final String CLIENT_PASSWORD = "111111";
+    private final String CLIENT_SECRET = "111111";
 
     private final String CLIENT_CALLBACK = "http://127.0.0.1:20050/login";
     /**
@@ -36,12 +36,12 @@ public class CallbackController {
         AuthorizationCodeResourceDetails resourceDetails = new AuthorizationCodeResourceDetails();
         resourceDetails.setAccessTokenUri(ACCESS_TOKEN_URI);
         resourceDetails.setClientId(CLIENT_ID);
-        resourceDetails.setClientSecret(CLIENT_PASSWORD);
+        resourceDetails.setClientSecret(CLIENT_SECRET);
 
         // 创建
         OAuth2RestTemplate restTemplate = new OAuth2RestTemplate(resourceDetails);
         restTemplate.getOAuth2ClientContext().getAccessTokenRequest().setAuthorizationCode(code);
-        restTemplate.getOAuth2ClientContext().getAccessTokenRequest().setPreservedState("http://127.0.0.1:20050/login");
+        restTemplate.getOAuth2ClientContext().getAccessTokenRequest().setPreservedState(CLIENT_CALLBACK);
         restTemplate.setAccessTokenProvider(new AuthorizationCodeAccessTokenProvider());
         return restTemplate.getAccessToken();
     }

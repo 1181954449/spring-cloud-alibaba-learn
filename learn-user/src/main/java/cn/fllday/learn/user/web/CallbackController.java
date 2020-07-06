@@ -1,5 +1,8 @@
 package cn.fllday.learn.user.web;
 
+import cn.fllday.learn.common.AjaxResult;
+import cn.fllday.learn.user.oauth2.LearnOAuth2AuthorizationCodeAccessTokenProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeAccessTokenProvider;
 import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
@@ -18,6 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class CallbackController {
 
+
+
     private final String ACCESS_TOKEN_URI = "http://127.0.0.1:20070/oauth/token";
 
     private final String CLIENT_ID = "clientapp";
@@ -31,6 +36,8 @@ public class CallbackController {
      *             登录成功之后 ， 引导用户授权，如果授权，则返回一个code，
      * @return
      */
+
+
     @GetMapping(value = "/login")
     public OAuth2AccessToken login(@RequestParam(value = "code") String code) {
         AuthorizationCodeResourceDetails resourceDetails = new AuthorizationCodeResourceDetails();
@@ -42,7 +49,7 @@ public class CallbackController {
         OAuth2RestTemplate restTemplate = new OAuth2RestTemplate(resourceDetails);
         restTemplate.getOAuth2ClientContext().getAccessTokenRequest().setAuthorizationCode(code);
         restTemplate.getOAuth2ClientContext().getAccessTokenRequest().setPreservedState(CLIENT_CALLBACK);
-        restTemplate.setAccessTokenProvider(new AuthorizationCodeAccessTokenProvider());
+        restTemplate.setAccessTokenProvider(new LearnOAuth2AuthorizationCodeAccessTokenProvider());
         return restTemplate.getAccessToken();
     }
 

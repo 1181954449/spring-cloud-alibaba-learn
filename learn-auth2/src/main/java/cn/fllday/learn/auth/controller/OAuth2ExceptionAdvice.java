@@ -1,7 +1,9 @@
 package cn.fllday.learn.auth.controller;
 
 import cn.fllday.learn.common.AjaxResult;
+import cn.fllday.learn.common.ServiceExceptionEnum;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.oauth2.common.exceptions.InvalidGrantException;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 import org.springframework.security.oauth2.provider.ClientRegistrationException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -41,6 +43,13 @@ public class OAuth2ExceptionAdvice {
         log.error("Handling error: " + e.getClass().getSimpleName() + ", " + e.getMessage());
         e.printStackTrace();
         return AjaxResult.error(e.getMessage());
+    }
+
+    @ExceptionHandler(InvalidGrantException.class)
+    public AjaxResult handleException(InvalidGrantException e) throws Exception {
+        log.error("handling error: " + e.getClass().getSimpleName() + ", " + e.getMessage());
+        e.printStackTrace();
+        return AjaxResult.error(ServiceExceptionEnum.AUTH_USERNAME_OR_PASSWORD_ERRPR, e.getMessage());
     }
 
 }

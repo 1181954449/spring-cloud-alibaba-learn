@@ -17,8 +17,7 @@ public class CorsConfig {
     // 设置允许跨域的源
     private static String[] originsVal = new String[]{
             "127.0.0.1:8080",
-            "localhost:8080",
-            "google.com"
+            "localhost:8080"
     };
 
     /**

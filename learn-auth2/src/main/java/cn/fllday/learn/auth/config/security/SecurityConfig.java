@@ -68,6 +68,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticated();
     }
 
+
+
     //密码编码器
     @Bean
     public PasswordEncoder passwordEncoder() {

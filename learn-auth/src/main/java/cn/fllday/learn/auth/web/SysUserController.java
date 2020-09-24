@@ -9,6 +9,7 @@ import cn.fllday.learn.pojo.user.dto.SysUserDTO;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -62,6 +63,7 @@ public class SysUserController {
     }
 
     @GetMapping(value = "")
+    @PreAuthorize("hasAuthority('sys:setting:m')")
     public AjaxResult<PageInfo<SysUser>> getList(@RequestParam(required = true, defaultValue = "0") Integer page,
                                              @RequestParam(required = false, defaultValue = "15") Integer size) {
         PageInfo<SysUser> pageInfo = userService.queryUserByPage(page, size);

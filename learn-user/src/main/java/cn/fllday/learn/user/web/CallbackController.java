@@ -1,10 +1,10 @@
 package cn.fllday.learn.user.web;
 
+import cn.fllday.learn.common.AjaxResult;
 import cn.fllday.learn.user.oauth2.provider.LearnOAuth2AuthorizationCodeAccessTokenProvider;
 import cn.fllday.learn.user.oauth2.provider.LearnOAuth2ResourceOwnerPasswordAccessTokenProvider;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
-import org.springframework.security.oauth2.client.token.grant.password.ResourceOwnerPasswordAccessTokenProvider;
 import org.springframework.security.oauth2.client.token.grant.password.ResourceOwnerPasswordResourceDetails;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.web.bind.annotation.*;
@@ -33,10 +33,8 @@ public class CallbackController {
      *             登录成功之后 ， 引导用户授权，如果授权，则返回一个code，
      * @return
      */
-
-
     @GetMapping(value = "/login")
-    public OAuth2AccessToken loginGet(@RequestParam(value = "code") String code) {
+    public AjaxResult loginGet(@RequestParam(value = "code") String code) {
         AuthorizationCodeResourceDetails resourceDetails = new AuthorizationCodeResourceDetails();
         resourceDetails.setAccessTokenUri(ACCESS_TOKEN_URI);
         resourceDetails.setClientId(CLIENT_ID);
@@ -47,12 +45,17 @@ public class CallbackController {
         restTemplate.getOAuth2ClientContext().getAccessTokenRequest().setAuthorizationCode(code);
         restTemplate.getOAuth2ClientContext().getAccessTokenRequest().setPreservedState(CLIENT_CALLBACK);
         restTemplate.setAccessTokenProvider(new LearnOAuth2AuthorizationCodeAccessTokenProvider());
-        return restTemplate.getAccessToken();
+        try {
+            return AjaxResult.success(restTemplate.getAccessToken());
+        }catch (Exception e){
+            e.printStackTrace();
+            return AjaxResult.error();
+        }
     }
 
 
     @PostMapping(value = "/login")
-    public OAuth2AccessToken loginPost(@RequestParam(value = "username") String username,
+    public AjaxResult loginPost(@RequestParam(value = "username") String username,
                                        @RequestParam(value = "password") String password) {
         ResourceOwnerPasswordResourceDetails resourceDetails = new ResourceOwnerPasswordResourceDetails();
         resourceDetails.setAccessTokenUri(ACCESS_TOKEN_URI);
@@ -63,9 +66,12 @@ public class CallbackController {
         // 创建 template
         OAuth2RestTemplate restTemplate = new OAuth2RestTemplate(resourceDetails);
         restTemplate.setAccessTokenProvider(new LearnOAuth2ResourceOwnerPasswordAccessTokenProvider());
-        return restTemplate.getAccessToken();
+        try {
+            OAuth2AccessToken accessToken = restTemplate.getAccessToken();
+            return AjaxResult.success(accessToken);
+        }catch (Exception e){
+            e.printStackTrace();
+            return AjaxResult.error();
+        }
     }
-
-
-
 }

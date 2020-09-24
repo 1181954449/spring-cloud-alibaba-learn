@@ -22,9 +22,11 @@ public enum  ServiceExceptionEnum implements Serializable {
     AUTH_NO_GRANT_TYPE_ERRPR(1001001007, "授权类型参数不存在"),
     AUTH_NOT_SUPPORT_IMPLICIT_ERROR(1001001008, "不支持隐式授权"),
     AUTH_UNKNOW_GRANT_TYPE_ERROR(1001001009, "未知的授权方式"),
+    AUTH_CODE_ERROR(1001001010, "验证码错误"),
 
     // ==========  用户服务  ======================
-    USER_NOT_FOUNT_ERROR(1001002001, "用户不存在")
+    USER_NOT_FOUNT_ERROR(1001002001, "用户不存在"),
+    USER_PARAMS_ERRPR(1001002002, "用户参数错误")
 
 
     ;

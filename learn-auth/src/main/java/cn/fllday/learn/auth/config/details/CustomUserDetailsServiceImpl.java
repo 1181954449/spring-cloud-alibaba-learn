@@ -1,8 +1,7 @@
 package cn.fllday.learn.auth.config.details;
 
-import cn.fllday.learn.auth.remote.UserRemote;
-import cn.fllday.learn.common.AjaxResult;
-import cn.fllday.learn.common.ServiceExceptionEnum;
+import cn.fllday.learn.auth.service.MenuService;
+import cn.fllday.learn.auth.service.UserService;
 import cn.fllday.learn.pojo.user.SysUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +14,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @Author: gssznb
@@ -28,7 +24,9 @@ import java.util.Map;
 public class CustomUserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
-    private UserRemote userRemote;
+    private UserService userService;
+    @Autowired
+    private MenuService menuService;
 
     /**
      * 用户登录逻辑
@@ -42,15 +40,12 @@ public class CustomUserDetailsServiceImpl implements UserDetailsService {
             log.info("用户登录： 用户名输入为空");
             throw new UsernameNotFoundException("用户名不能为空");
         }
-
-        AjaxResult<SysUser> beanResult = userRemote.getUserByUsername(s);
-        if (beanResult.getStatus() == ServiceExceptionEnum.USER_NOT_FOUNT_ERROR.getStatusCode()) {
+        SysUser bean = userService.getUserByUsername(s);
+        if (Objects.isNull(bean)) {
             log.info("用户登录： 用户名不存在: [ {} ]", s);
             throw new UsernameNotFoundException("用户名不存在");
         }
-        SysUser bean = beanResult.getData();
-        AjaxResult<List<String>> permsResult = userRemote.getUserPerms(bean.getUserId());
-        List<String> perms = permsResult.getData();
+        List<String> perms = menuService.findSysMenuPersByUserId(bean.getUserId());
         Collection<GrantedAuthority> authorities = new ArrayList<>(perms.size());
         perms.forEach(p -> {
             authorities.add(new SimpleGrantedAuthority(p));

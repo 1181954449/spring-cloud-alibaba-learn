@@ -56,6 +56,10 @@ public class AjaxResult<T> implements Serializable {
         return new AjaxResult<T>(errorEnum, exMsg, null);
     }
 
+    public static <T> AjaxResult<T> error(ServiceExceptionEnum errorEnum, T data){
+        return new AjaxResult<T>(errorEnum, null, data);
+    }
+
 
     @Override
     public String toString() {

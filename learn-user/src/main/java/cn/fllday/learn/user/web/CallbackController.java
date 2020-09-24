@@ -1,16 +1,13 @@
 package cn.fllday.learn.user.web;
 
-import cn.fllday.learn.common.AjaxResult;
-import cn.fllday.learn.user.oauth2.LearnOAuth2AuthorizationCodeAccessTokenProvider;
-import org.springframework.beans.factory.annotation.Autowired;
+import cn.fllday.learn.user.oauth2.provider.LearnOAuth2AuthorizationCodeAccessTokenProvider;
+import cn.fllday.learn.user.oauth2.provider.LearnOAuth2ResourceOwnerPasswordAccessTokenProvider;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
-import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeAccessTokenProvider;
 import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
+import org.springframework.security.oauth2.client.token.grant.password.ResourceOwnerPasswordAccessTokenProvider;
+import org.springframework.security.oauth2.client.token.grant.password.ResourceOwnerPasswordResourceDetails;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author gssznb
@@ -39,7 +36,7 @@ public class CallbackController {
 
 
     @GetMapping(value = "/login")
-    public OAuth2AccessToken login(@RequestParam(value = "code") String code) {
+    public OAuth2AccessToken loginGet(@RequestParam(value = "code") String code) {
         AuthorizationCodeResourceDetails resourceDetails = new AuthorizationCodeResourceDetails();
         resourceDetails.setAccessTokenUri(ACCESS_TOKEN_URI);
         resourceDetails.setClientId(CLIENT_ID);
@@ -52,5 +49,23 @@ public class CallbackController {
         restTemplate.setAccessTokenProvider(new LearnOAuth2AuthorizationCodeAccessTokenProvider());
         return restTemplate.getAccessToken();
     }
+
+
+    @PostMapping(value = "/login")
+    public OAuth2AccessToken loginPost(@RequestParam(value = "username") String username,
+                                       @RequestParam(value = "password") String password) {
+        ResourceOwnerPasswordResourceDetails resourceDetails = new ResourceOwnerPasswordResourceDetails();
+        resourceDetails.setAccessTokenUri(ACCESS_TOKEN_URI);
+        resourceDetails.setClientId(CLIENT_ID);
+        resourceDetails.setClientSecret(CLIENT_SECRET);
+        resourceDetails.setUsername(username);
+        resourceDetails.setPassword(password);
+        // 创建 template
+        OAuth2RestTemplate restTemplate = new OAuth2RestTemplate(resourceDetails);
+        restTemplate.setAccessTokenProvider(new LearnOAuth2ResourceOwnerPasswordAccessTokenProvider());
+        return restTemplate.getAccessToken();
+    }
+
+
 
 }

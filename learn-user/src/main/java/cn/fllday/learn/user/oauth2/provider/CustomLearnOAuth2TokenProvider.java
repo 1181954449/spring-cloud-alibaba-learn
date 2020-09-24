@@ -1,8 +1,8 @@
-package cn.fllday.learn.user.oauth2;
+package cn.fllday.learn.user.oauth2.provider;
 
 import cn.fllday.learn.common.AjaxResult;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.client.ClientHttpRequestInterceptor;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.security.oauth2.client.resource.OAuth2AccessDeniedException;
@@ -13,32 +13,38 @@ import org.springframework.security.oauth2.client.token.OAuth2AccessTokenSupport
 import org.springframework.security.oauth2.client.token.RequestEnhancer;
 import org.springframework.security.oauth2.client.token.auth.ClientAuthenticationHandler;
 import org.springframework.security.oauth2.client.token.auth.DefaultClientAuthenticationHandler;
-import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeAccessTokenProvider;
+import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author gssznb
- * @Date 2020/7/6
+ * @Date 2020/7/8
  * @Descript:
  */
-public class LearnOAuth2AuthorizationCodeAccessTokenProvider extends AuthorizationCodeAccessTokenProvider {
+public interface CustomLearnOAuth2TokenProvider {
 
-    private ClientAuthenticationHandler authenticationHandler = new DefaultClientAuthenticationHandler();
-    private RequestEnhancer tokenRequestEnhancer = new DefaultRequestEnhancer();
+    ClientAuthenticationHandler authenticationHandler = new DefaultClientAuthenticationHandler();
+    RequestEnhancer tokenRequestEnhancer = new DefaultRequestEnhancer();
 
-    @Override
-    public OAuth2AccessToken retrieveToken(AccessTokenRequest request, OAuth2ProtectedResourceDetails resource, MultiValueMap<String, String> form, HttpHeaders headers) throws OAuth2AccessDeniedException {
+    default OAuth2AccessToken retrieveToken2(AccessTokenRequest request,
+                                            OAuth2ProtectedResourceDetails resource,
+                                            MultiValueMap<String, String> form,
+                                            HttpHeaders headers,
+                                            RestOperations restOperations,
+                                            String url,
+                                            RequestCallback callback
+    ) throws OAuth2AccessDeniedException {
         try {
-            this.authenticationHandler.authenticateTokenRequest(resource, form, headers);
-            this.tokenRequestEnhancer.enhance(request, resource, form, headers);
-            final ResponseExtractor<AjaxResult> delegate = this.getResponseExtractor2();
+            authenticationHandler.authenticateTokenRequest(resource, form, headers);
+            tokenRequestEnhancer.enhance(request, resource, form, headers);
+            final ResponseExtractor<AjaxResult> delegate = getResponseExtractor2();
             ResponseExtractor<AjaxResult> extractor = new ResponseExtractor<AjaxResult>() {
                 @Override
                 public AjaxResult extractData(ClientHttpResponse response) throws IOException {
@@ -49,10 +55,12 @@ public class LearnOAuth2AuthorizationCodeAccessTokenProvider extends Authorizati
                     return (AjaxResult)delegate.extractData(response);
                 }
             };
-            AjaxResult execute = this.getRestTemplate().execute(this.getAccessTokenUri(resource, form), this.getHttpMethod(), this.getRequestCallback(resource, form, headers), extractor, form.toSingleValueMap());
+            AjaxResult execute = restOperations.execute(url , getHttpMethod2(), callback, extractor, form.toSingleValueMap());
             int status = execute.getStatus();
             if (status == 0) {
-                return (OAuth2AccessToken) execute.getData();
+                Map<String, String> tokenParams = (Map<String, String>) execute.getData();
+                OAuth2AccessToken oAuth2AccessToken = DefaultOAuth2AccessToken.valueOf(tokenParams);
+                return oAuth2AccessToken;
             } else {
                 throw new OAuth2AccessDeniedException("Access token denied.", resource);
             }
@@ -63,9 +71,14 @@ public class LearnOAuth2AuthorizationCodeAccessTokenProvider extends Authorizati
         }
     }
 
-
-    public ResponseExtractor<AjaxResult> getResponseExtractor2() {
+    default ResponseExtractor<AjaxResult> getResponseExtractor2() {
         List<HttpMessageConverter<?>> messageConverters = (new RestTemplate()).getMessageConverters();
         return new HttpMessageConverterExtractor(AjaxResult.class, messageConverters);
+    }
+
+
+
+    default HttpMethod getHttpMethod2() {
+        return HttpMethod.POST;
     }
 }

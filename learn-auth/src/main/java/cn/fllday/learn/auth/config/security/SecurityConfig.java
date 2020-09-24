@@ -1,6 +1,8 @@
 package cn.fllday.learn.auth.config.security;
 
 import cn.fllday.learn.auth.config.filter.JwtAuthenticationTokenFilter;
+import cn.fllday.learn.auth.config.filter.VerifyFilter;
+import cn.fllday.learn.auth.utils.verify.VerifyCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -69,8 +71,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     /**
      * token 过滤器类
      */
-//    @Autowired
-//    private JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
+    @Autowired
+    private JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
 
 
 
@@ -83,9 +85,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         super.configure(auth);
     }
 
+    @Autowired
+    private VerifyFilter verifyFilter;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        http.addFilterBefore(verifyFilter, UsernamePasswordAuthenticationFilter.class);
         http
                 .csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint)
@@ -96,22 +101,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticationEntryPoint(authenticationEntryPoint)
                 .and()
                 .formLogin()
-                .usernameParameter("username")
+                .usernameParameter("userName")
                 .passwordParameter("password")
                 .successHandler(authenticationSuccessHandler)
                 .failureHandler(authenticationFailureHandler)
                 .and()
+                .cors()
+                .and()
                 .exceptionHandling().accessDeniedHandler(accessDeniedHandler)
                 .and()
                 .authorizeRequests()
-                .antMatchers(  "/captchaImage").permitAll()
+                .antMatchers(  "/verify/captchaImage").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .headers().frameOptions().disable();
 
         http.logout().logoutUrl("/logout").logoutSuccessHandler(logoutSuccessHandler);
 
-//        http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
     }
 

@@ -94,9 +94,22 @@ public class SysMenu {
     private Date updateTime;
 
     /**
+     * 菜单名称
+     */
+    private String name;
+
+    /**
      * 备注
      */
     private String remark;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     /**
      * 获取菜单ID

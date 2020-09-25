@@ -40,4 +40,16 @@ public interface UserService extends BaseService {
      */
     PageInfo<SysUser> queryUserByPage(Integer page, Integer size);
 
+    /**
+     * 根据id 删除用户
+     * @param id
+     */
+    void deleteUserById(Long id);
+
+    /**
+     * 根据id 锁定用户
+     * @param id
+     */
+    void lockedUserById(Long id);
+
 }

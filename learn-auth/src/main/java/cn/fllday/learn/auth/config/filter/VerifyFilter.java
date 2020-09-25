@@ -6,6 +6,7 @@ import cn.fllday.learn.common.ServiceExceptionEnum;
 import cn.fllday.learn.component.redis.RedisUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;

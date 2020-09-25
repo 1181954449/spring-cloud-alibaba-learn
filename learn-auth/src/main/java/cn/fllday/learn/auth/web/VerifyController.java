@@ -1,6 +1,7 @@
 package cn.fllday.learn.auth.web;
 
 import cn.fllday.learn.auth.utils.ip.IpUtils;
+import cn.fllday.learn.auth.utils.verify.DefaultVerifyCodeImpl;
 import cn.fllday.learn.auth.utils.verify.VerifyCode;
 import cn.fllday.learn.auth.utils.verify.VerifyImageEntity;
 import cn.fllday.learn.component.redis.RedisUtils;
@@ -26,13 +27,11 @@ import java.io.IOException;
 public class VerifyController {
 
     @Autowired
-    private VerifyCode verifyCode;
-
-    @Autowired
     private RedisUtils redisUtils;
 
     @RequestMapping(value = "/captchaImage")
     public void getVerificationCode(HttpServletRequest request, HttpServletResponse response)  {
+        VerifyCode verifyCode = new DefaultVerifyCodeImpl();
         VerifyImageEntity verifyImageEntity = new VerifyImageEntity(150, 50);
         verifyCode.generImage(verifyImageEntity);
         redisUtils.set(IpUtils.getRealIp(request), verifyImageEntity.getCode(), 5 * 60);

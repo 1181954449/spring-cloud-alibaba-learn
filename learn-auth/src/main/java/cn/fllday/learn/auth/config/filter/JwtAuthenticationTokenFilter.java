@@ -44,9 +44,9 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
         }catch (ExpiredJwtException ex) {
-            log.error("token 过期: [ {} ]", ex.getLocalizedMessage());
+            log.info("token 过期: [ {} ]", ex.getLocalizedMessage());
         }catch (Exception ex) {
-            log.error("token 无效: [ {} ]", ex.getLocalizedMessage());
+            log.info("token 无效: [ {} ]", ex.getLocalizedMessage());
         }
         chain.doFilter(request, response);
     }

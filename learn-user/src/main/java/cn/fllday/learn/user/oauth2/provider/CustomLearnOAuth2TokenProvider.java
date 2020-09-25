@@ -1,6 +1,7 @@
 package cn.fllday.learn.user.oauth2.provider;
 
 import cn.fllday.learn.common.AjaxResult;
+import cn.fllday.learn.user.oauth2.exception.OAuth2ResultException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.client.ClientHttpResponse;
@@ -9,7 +10,6 @@ import org.springframework.security.oauth2.client.resource.OAuth2AccessDeniedExc
 import org.springframework.security.oauth2.client.resource.OAuth2ProtectedResourceDetails;
 import org.springframework.security.oauth2.client.token.AccessTokenRequest;
 import org.springframework.security.oauth2.client.token.DefaultRequestEnhancer;
-import org.springframework.security.oauth2.client.token.OAuth2AccessTokenSupport;
 import org.springframework.security.oauth2.client.token.RequestEnhancer;
 import org.springframework.security.oauth2.client.token.auth.ClientAuthenticationHandler;
 import org.springframework.security.oauth2.client.token.auth.DefaultClientAuthenticationHandler;
@@ -62,7 +62,7 @@ public interface CustomLearnOAuth2TokenProvider {
                 OAuth2AccessToken oAuth2AccessToken = DefaultOAuth2AccessToken.valueOf(tokenParams);
                 return oAuth2AccessToken;
             } else {
-                throw new OAuth2AccessDeniedException("Access token denied.", resource);
+                throw new OAuth2ResultException(execute);
             }
         } catch (OAuth2Exception var8) {
             throw new OAuth2AccessDeniedException("Access token denied.", resource, var8);

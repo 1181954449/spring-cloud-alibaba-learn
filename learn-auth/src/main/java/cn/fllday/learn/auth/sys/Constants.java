@@ -16,6 +16,16 @@ public class Constants {
          * 已经删除
          */
         public static final String DEL_FLAG_NO = "1";
+
+        /**
+         * 锁定
+         */
+        public static final String LOCKED_STATUS = "1";
+
+        /**
+         * 解锁
+         */
+        public static final String UN_LOCKED_STATUS = "0";
     }
 
 }

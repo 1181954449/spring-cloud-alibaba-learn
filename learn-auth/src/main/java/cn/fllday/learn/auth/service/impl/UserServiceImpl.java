@@ -1,14 +1,18 @@
 package cn.fllday.learn.auth.service.impl;
 
 import cn.fllday.learn.auth.mapper.SysUserMapper;
+import cn.fllday.learn.auth.mapper.SysUserRoleMapper;
 import cn.fllday.learn.auth.service.UserService;
 import cn.fllday.learn.auth.sys.Constants;
 import cn.fllday.learn.pojo.user.SysUser;
+import cn.fllday.learn.pojo.user.SysUserRole;
 import cn.fllday.learn.pojo.user.vo.SysUserVO;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import java.util.List;
@@ -22,9 +26,12 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private SysUserMapper sysUserMapper;
+    @Autowired
+    private SysUserRoleMapper sysUserRoleMapper;
 
 
     @Override
+    @Cacheable(key = "'SysUser_'+args", value = "SysUser")
     public SysUser getUserByUsername(String username) {
         Example example = new Example(SysUser.class);
         example.createCriteria()
@@ -60,5 +67,22 @@ public class UserServiceImpl implements UserService {
         List<SysUser> sysUsers = sysUserMapper.selectByExample(example);
         PageInfo<SysUser> pageInfo = new PageInfo<>(sysUsers);
         return pageInfo;
+    }
+
+
+    @Transactional(rollbackFor = {Exception.class})
+    @Override
+    public void deleteUserById(Long id) {
+        SysUser sysUser = sysUserMapper.selectByPrimaryKey(id);
+        sysUser.setDelFlag(Constants.UserConstants.DEL_FLAG_NO);
+        sysUserMapper.updateByPrimaryKey(sysUser);
+    }
+
+    @Transactional(rollbackFor = {Exception.class})
+    @Override
+    public void lockedUserById(Long id) {
+        SysUser sysUser = sysUserMapper.selectByPrimaryKey(id);
+        sysUser.setStatus(Constants.UserConstants.LOCKED_STATUS);
+        sysUserMapper.updateByPrimaryKey(sysUser);
     }
 }

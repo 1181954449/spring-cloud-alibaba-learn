@@ -7,6 +7,7 @@ import cn.fllday.learn.pojo.user.vo.SysMenuVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,6 +27,7 @@ public class MenuServiceImpl implements MenuService {
 
 
     @Override
+    @Cacheable(value = "SysUser", key = "'menu_dto_'+args")
     public List<SysMenuVO> findSysMenuByUserId(Long userId) {
         List<SysMenu> sysMenus = sysMenuMapper.selectSysMenuList(userId, 0L);
         List<SysMenuVO> collect = sysMenus.stream()
@@ -51,6 +53,7 @@ public class MenuServiceImpl implements MenuService {
 
 
     @Override
+    @Cacheable(key = "'menus_'+args", value = "SysUser")
     public List<String> findSysMenuPersByUserId(Long userId) {
         List<String> menusStrs = sysMenuMapper.selectSysMenuStrings(userId);
         return menusStrs;

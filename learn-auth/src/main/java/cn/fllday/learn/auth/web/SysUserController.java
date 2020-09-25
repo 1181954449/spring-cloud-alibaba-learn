@@ -8,12 +8,16 @@ import cn.fllday.learn.pojo.user.SysUser;
 import cn.fllday.learn.pojo.user.dto.SysUserDTO;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -57,7 +61,7 @@ public class SysUserController {
     }
 
     @GetMapping(value = "getUserPerms")
-    public AjaxResult<List<String>> getUserPerms(@RequestParam Long id) {
+    public AjaxResult<List<String>> getUserPerms(@RequestParam @NotNull(message = "用户ID不能为空") Long id) {
         List<String> list = menuService.findSysMenuPersByUserId(id);
         return AjaxResult.success(list);
     }
@@ -71,7 +75,25 @@ public class SysUserController {
     }
 
     @PostMapping(value = "")
-    public AjaxResult registerUser(@Valid @RequestBody SysUserDTO dto) {
+    public AjaxResult registerUser(@Validated @RequestBody SysUserDTO dto) {
+        return AjaxResult.success();
+    }
+
+    @PostMapping(value = "/delete")
+    public AjaxResult deleteUser(@NotBlank(message = "name 不能为空") @Length(min = 2, max = 10, message = "name 长度必须在 {min} - {max} 之间") String id,
+                                 @NotBlank(message = "id2 不能为空")  String id2) {
+        userService.deleteUserById(Long.parseLong(id));
+        return AjaxResult.success();
+    }
+
+    @PostMapping(value = "/locked")
+    public AjaxResult lockedUser(@NotNull(message = "用户 id 不能为空") Long id) {
+        userService.lockedUserById(id);
+        return AjaxResult.success();
+    }
+
+    @PostMapping(value = "/unLocked")
+    public AjaxResult unLockedUser(@NotNull(message = "用户 id 不能为空")  Long id) {
         return AjaxResult.success();
     }
 }

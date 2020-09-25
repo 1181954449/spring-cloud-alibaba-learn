@@ -16,6 +16,8 @@ import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+import java.time.Duration;
+
 /**
  * @Author: gssznb
  */
@@ -50,7 +52,8 @@ public class RedisConfig {
                 //配置缓存失效时间100秒
                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(redisSerializer))
                 .serializeValuesWith(
-                        RedisSerializationContext.SerializationPair.fromSerializer(jackson2JsonRedisSerializer));
+                        RedisSerializationContext.SerializationPair.fromSerializer(jackson2JsonRedisSerializer))
+                .entryTtl(Duration.ofMillis(60 * 1000 * 2));
 
         RedisCacheManager cacheManager = RedisCacheManager.builder(redisConnectionFactory).cacheDefaults(redisCacheConfiguration)
                 .build();

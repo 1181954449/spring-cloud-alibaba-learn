@@ -1,6 +1,7 @@
 package cn.fllday.learn.user.web;
 
 import cn.fllday.learn.common.AjaxResult;
+import cn.fllday.learn.user.oauth2.exception.OAuth2ResultException;
 import cn.fllday.learn.user.oauth2.provider.LearnOAuth2AuthorizationCodeAccessTokenProvider;
 import cn.fllday.learn.user.oauth2.provider.LearnOAuth2ResourceOwnerPasswordAccessTokenProvider;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
@@ -47,7 +48,9 @@ public class CallbackController {
         restTemplate.setAccessTokenProvider(new LearnOAuth2AuthorizationCodeAccessTokenProvider());
         try {
             return AjaxResult.success(restTemplate.getAccessToken());
-        }catch (Exception e){
+        } catch (OAuth2ResultException oe){
+            return oe.getAjaxResult();
+        } catch (Exception e){
             e.printStackTrace();
             return AjaxResult.error();
         }
@@ -69,7 +72,9 @@ public class CallbackController {
         try {
             OAuth2AccessToken accessToken = restTemplate.getAccessToken();
             return AjaxResult.success(accessToken);
-        }catch (Exception e){
+        } catch (OAuth2ResultException oe){
+            return oe.getAjaxResult();
+        } catch (Exception e){
             e.printStackTrace();
             return AjaxResult.error();
         }

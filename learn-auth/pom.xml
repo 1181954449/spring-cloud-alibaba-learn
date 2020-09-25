@@ -32,17 +32,17 @@
         <dependency>
             <groupId>cn.fllday.cloud</groupId>
             <artifactId>common-api</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>cn.fllday.cloud</groupId>
             <artifactId>learn-component-tk-mybatis</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>cn.fllday.cloud</groupId>
             <artifactId>learn-component-redis</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
         <!--   spring security     -->
         <dependency>

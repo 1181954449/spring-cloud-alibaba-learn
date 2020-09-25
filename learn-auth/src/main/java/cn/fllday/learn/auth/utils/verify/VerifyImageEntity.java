@@ -29,7 +29,7 @@ public class VerifyImageEntity implements Serializable {
         this(width, height, BufferedImage.TYPE_INT_RGB);
     }
 
-    public VerifyImageEntity(int width, int height, int typeIntRgb) {
+    private VerifyImageEntity(int width, int height, int typeIntRgb) {
         this.width = width;
         this.height = height;
         this.typeIntRgb = typeIntRgb;

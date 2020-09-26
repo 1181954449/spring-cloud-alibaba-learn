@@ -67,7 +67,6 @@ public class SysUserController {
     }
 
     @GetMapping(value = "")
-    @PreAuthorize("hasAuthority('sys:setting:m')")
     public AjaxResult<PageInfo<SysUser>> getList(@RequestParam(required = true, defaultValue = "0") Integer page,
                                              @RequestParam(required = false, defaultValue = "15") Integer size) {
         PageInfo<SysUser> pageInfo = userService.queryUserByPage(page, size);

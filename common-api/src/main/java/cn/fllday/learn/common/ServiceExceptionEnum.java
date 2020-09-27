@@ -10,6 +10,8 @@ public enum  ServiceExceptionEnum implements Serializable {
     // ========== 系统级别 ==========
     SUCCESS(0, "成功"),
     SYS_ERROR(2001001000, "服务器端发生异常"),
+    SYS_REPEAT_REQUEST_ERROR(2001001001, "请勿重复请求"),
+    SYS_LIMIT_REQUEST_ERROR(2001001002, "请求过于频繁，请稍后再试"),
     CUSTOM_ERROR(0, "自定义信息") {},
 
     // ==========  授权服务  ==============

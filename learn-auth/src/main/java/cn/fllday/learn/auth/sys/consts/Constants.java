@@ -1,4 +1,4 @@
-package cn.fllday.learn.auth.sys;
+package cn.fllday.learn.auth.sys.consts;
 
 /**
  * @author gssznb

@@ -3,9 +3,13 @@
     <el-table
       :data="pager.list"
       stripe
+      :size="pager.sz ? pager.sz : 'small'"
+      border
+      :height="pager.height?pager.height : 550"
       style="width: 100%">
       <template v-for="(item, index) in colList">
         <el-table-column
+          :type="item.type?item.type:''"
           :key="item.prop"
           v-if="!item.show"
           :prop="item.prop"
@@ -14,11 +18,13 @@
           :width="item.width">
         </el-table-column>
       </template>
+      <slot></slot>
     </el-table>
     <el-pagination
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      style="text-align: left;margin: 20px 0"
+      style="text-align: right;margin: 20px 0"
+      background
       :current-page="pager.pageNum"
       :page-size="pager.pageSize"
       :page-sizes="[10,20,30,50]"
@@ -27,7 +33,6 @@
       next-text="下一页"
       layout="total, sizes, prev, pager, next, jumper"
     >
-
     </el-pagination>
   </div>
 </template>
@@ -51,8 +56,8 @@ export default {
       handleSizeChange(val) {
         this.$emit('changeSize', val)
       },
-      handleCurrentChange(val) {
-        this.$emit('changeCurrentPage', val)
+      handleCurrentChange(val, newCurrentVal) {
+        this.$emit('changeCurrentPage', val, newCurrentVal)
       }
     }
   }

@@ -14,7 +14,6 @@ import store from './store/index'
 import Auth from './direct/auth'
 import {getRouters} from './utils/router-utils'
 
-Vue.config.productionTip = false
 
 /**
  * 添加页面加载进度

@@ -5,7 +5,10 @@ import cn.fllday.learn.auth.mapper.SysUserRoleMapper;
 import cn.fllday.learn.auth.service.UserService;
 import cn.fllday.learn.auth.sys.consts.Constants;
 import cn.fllday.learn.pojo.user.SysUser;
+import cn.fllday.learn.pojo.user.dto.BaseDTO;
+import cn.fllday.learn.pojo.user.dto.SysUserDTO;
 import com.github.pagehelper.PageInfo;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -57,11 +60,17 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public PageInfo<SysUser> queryUserByPage(Integer page, Integer size) {
-        setPageSize(page, size);
+    public PageInfo<SysUser> queryUserByPage(SysUserDTO dto) {
+        setPageSize(dto);
         Example example = new Example(SysUser.class);
-        example.createCriteria()
+        Example.Criteria criteria = example.createCriteria()
                 .andEqualTo("delFlag", Constants.UserConstants.DEL_FLAG_YES);
+        if (!StringUtils.isEmpty(dto.getPhonenumber())) {
+            criteria.andLike("phonenumber", "%"+dto.getPhonenumber()+"%");
+        }
+        if (!StringUtils.isEmpty(dto.getUserName())) {
+            criteria.andLike("userName","%"+ dto.getUserName()+"%");
+        }
         List<SysUser> sysUsers = sysUserMapper.selectByExample(example);
         PageInfo<SysUser> pageInfo = new PageInfo<>(sysUsers);
         return pageInfo;

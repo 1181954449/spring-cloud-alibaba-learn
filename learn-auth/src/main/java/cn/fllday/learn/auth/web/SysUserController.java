@@ -67,9 +67,8 @@ public class SysUserController {
     }
 
     @GetMapping(value = "")
-    public AjaxResult<PageInfo<SysUser>> getList(@RequestParam(required = true, defaultValue = "0") Integer page,
-                                             @RequestParam(required = false, defaultValue = "15") Integer size) {
-        PageInfo<SysUser> pageInfo = userService.queryUserByPage(page, size);
+    public AjaxResult<PageInfo<SysUser>> getList(SysUserDTO dto) {
+        PageInfo<SysUser> pageInfo = userService.queryUserByPage(dto);
         return AjaxResult.success(pageInfo);
     }
 

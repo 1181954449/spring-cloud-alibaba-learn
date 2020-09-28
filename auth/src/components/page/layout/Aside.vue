@@ -72,6 +72,9 @@
     .el-menu-vertical-auth {
         height: calc(100vh - 60px);
     }
+    .el-menu {
+      border-right: none;
+    }
 
     .el-menu-vertical-auth:not(.el-menu--collapse) {
         width: 200px;

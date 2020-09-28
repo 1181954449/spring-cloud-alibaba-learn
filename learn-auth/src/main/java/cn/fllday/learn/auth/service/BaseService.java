@@ -1,5 +1,6 @@
 package cn.fllday.learn.auth.service;
 
+import cn.fllday.learn.pojo.user.dto.BaseDTO;
 import com.github.pagehelper.PageHelper;
 
 /**
@@ -9,7 +10,13 @@ import com.github.pagehelper.PageHelper;
  */
 public interface BaseService {
 
-    default void setPageSize(Integer page, Integer pageSize) {
+    /**
+     *
+     * @param dto
+     */
+    default void setPageSize(BaseDTO dto) {
+        Integer page = dto.getPage();
+        Integer pageSize = dto.getSize();
         if (page == null && page < 0) {
             page = 0;
         }

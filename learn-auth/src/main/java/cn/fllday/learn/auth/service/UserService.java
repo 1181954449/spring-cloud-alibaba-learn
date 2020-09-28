@@ -1,6 +1,7 @@
 package cn.fllday.learn.auth.service;
 
 import cn.fllday.learn.pojo.user.SysUser;
+import cn.fllday.learn.pojo.user.dto.SysUserDTO;
 import com.github.pagehelper.PageInfo;
 
 import java.util.List;
@@ -34,11 +35,9 @@ public interface UserService extends BaseService {
 
     /**
      * 根据 页码 和 数量 查询分页
-     * @param page
-     * @param size
      * @return
      */
-    PageInfo<SysUser> queryUserByPage(Integer page, Integer size);
+    PageInfo<SysUser> queryUserByPage(SysUserDTO dto);
 
     /**
      * 根据id 删除用户

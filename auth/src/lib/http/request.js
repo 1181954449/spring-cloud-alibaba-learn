@@ -4,6 +4,7 @@
 import axios from 'axios'
 import QS from 'qs'
 import vm from  '../../main'
+import {logout} from '../../utils/auth'
 import {Message, Loading} from 'element-ui'
 
 axios.defaults.timeout = 10000
@@ -30,14 +31,19 @@ let needLoadingRequesting = 0;
 // 开始加载动画方法
 function startLoading() {
 	loadingAnimat = Loading.service({
-		text: '请稍等',
-		target: document.querySelector('#warp')
-	})
+    lock: true,
+    text: 'Loading',
+    spinner: 'el-icon-loading',
+    background: 'rgba(0, 0, 0, 0.7)',
+		target: document.querySelector("#default-loading") || document.querySelector("#warp")
+  })
 }
 
 // 关闭加载动画方法
 function endLoading() {
-	loadingAnimat.close()
+	setTimeout(() => {
+    loadingAnimat.close()
+  }, 500)
 }
 
 function showFullScreenLoading() {
@@ -76,9 +82,10 @@ axios.interceptors.response.use(response => {
 	let respBody =  response.data
 	let cusStatus = respBody.status
 	switch (cusStatus) {
-		case '1001001002':
-			vm.$router.push('/login')
-		break;
+		case 1001001002:
+		  // 设置为失效状态
+      logout()
+      return;
 	}
 	return Promise.resolve(response.data);
 }, error => {

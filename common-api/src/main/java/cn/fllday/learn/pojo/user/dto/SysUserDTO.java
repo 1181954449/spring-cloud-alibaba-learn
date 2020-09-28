@@ -19,7 +19,7 @@ import javax.validation.constraints.Pattern;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SysUserDTO {
+public class SysUserDTO extends BaseDTO{
 
     @NotNull(message = "id 不能为空", groups = Groups.Update.class)
     private Integer id;

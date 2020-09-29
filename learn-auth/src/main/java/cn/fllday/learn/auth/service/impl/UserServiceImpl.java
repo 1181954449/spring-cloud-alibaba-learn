@@ -71,6 +71,9 @@ public class UserServiceImpl implements UserService {
         if (!StringUtils.isEmpty(dto.getUserName())) {
             criteria.andLike("userName","%"+ dto.getUserName()+"%");
         }
+        if (dto.getDeptId() != null && dto.getDeptId() != 0) {
+            criteria.andEqualTo("deptId", dto.getDeptId());
+        }
         List<SysUser> sysUsers = sysUserMapper.selectByExample(example);
         PageInfo<SysUser> pageInfo = new PageInfo<>(sysUsers);
         return pageInfo;

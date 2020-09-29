@@ -10,6 +10,8 @@ import org.hibernate.validator.constraints.Length;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+import java.util.List;
 
 /**
  * @author gssznb
@@ -27,6 +29,8 @@ public class SysUserDTO extends BaseDTO{
     @Length(min = 6, max = 64, message = "用户名长度在 {min} ~ {max} 之间")
     @NotBlank(message = "用户名不能为空")
     private String userName;
+
+    private Integer deptId;
 
     @Length(max = 16, message = "昵称不能超过 {max} 个字符")
     @NotBlank(message = "昵称不能为空")
@@ -54,5 +58,9 @@ public class SysUserDTO extends BaseDTO{
     private String repeatPassword;
 
     private String remark;
+
+    @NotNull(message = "用户角色不能为空")
+    @Size(min = 1, message = "用户角色至少选择 {min} 个")
+    private List<Integer> roleIds;
 
 }

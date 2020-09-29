@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.fllday.learn.auth.mapper.SysDeptMapper" >
+  <resultMap id="BaseResultMap" type="cn.fllday.learn.pojo.user.SysDept" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="dept_id" property="deptId" jdbcType="BIGINT" />
+    <result column="detp_name" property="detpName" jdbcType="VARCHAR" />
+    <result column="parent_id" property="parentId" jdbcType="BIGINT" />
+    <result column="dept_path" property="deptPath" jdbcType="VARCHAR" />
+    <result column="established" property="established" jdbcType="TIMESTAMP" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="create_by" property="createBy" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="update_by" property="updateBy" jdbcType="TIMESTAMP" />
+  </resultMap>
+</mapper>

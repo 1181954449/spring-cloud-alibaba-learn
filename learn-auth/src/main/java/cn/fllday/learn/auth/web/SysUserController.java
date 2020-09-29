@@ -77,7 +77,7 @@ public class SysUserController {
         return AjaxResult.success();
     }
 
-    @PostMapping(value = "/delete")
+    @DeleteMapping(value = "/delete")
     @LocalLock(expire = 10)
     public AjaxResult deleteUser(@NotBlank(message = "ID 不能为空") String id) {
         userService.deleteUserById(Long.parseLong(id));

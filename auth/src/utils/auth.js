@@ -15,7 +15,7 @@ function logout() {
   store.dispatch('UserDetails/actSetToken', "")
   store.dispatch('UserDetails/actSetUserDetails', {})
   store.dispatch('UserDetails/actSetMenus', [])
-  this.actClearTab()
+  store.dispatch('Tabs/actClearTab')
   this.$router.push("/login")
 }
 

@@ -127,8 +127,8 @@
         this.$refs[formName].validate((valid) => {
           if (valid) {
             login(QS.stringify(this.loginUser)).then(res => {
-              if (res.status === 0) {
-                let data = res.data;
+              if (res.data.status === 0) {
+                let data = res.data.data;
                 this.actSetUserDetails(data.userDetails)
                 this.actSetToken(data.token)
                 this.actSetPerms(data.perms)

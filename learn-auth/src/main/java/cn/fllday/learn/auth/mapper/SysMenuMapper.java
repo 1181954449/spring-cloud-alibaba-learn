@@ -8,6 +8,9 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
+/**
+ * @author gssznb
+ */
 @Mapper
 public interface SysMenuMapper extends MyMapper<SysMenu> {
 

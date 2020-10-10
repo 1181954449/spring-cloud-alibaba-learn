@@ -22,6 +22,9 @@
         <el-button type="primary" icon="el-icon-search" @click="userSearch" size="small">查询</el-button>
       </el-form-item>
       <el-form-item>
+        <el-button type="primary" icon="el-icon-refresh-left" @click="userReset" size="small">重置</el-button>
+      </el-form-item>
+      <el-form-item>
         <el-button type="primary" icon="el-icon-refresh" @click="userRefresh" size="small">刷新</el-button>
       </el-form-item>
       <el-form-item>
@@ -30,7 +33,6 @@
     </el-form>
     <tab-page
       :col-list="colList"
-      :table-list="[]"
       :pager="pager"
       @changeCurrentPage="changeCurrentPage"
       @changeSize="changeSize">
@@ -55,8 +57,23 @@
       :before-close="handleClose">
       <span>
         <el-form ref="userInfo" :rules="userRules" :model="userInfo" label-width="100px">
-          <el-form-item size="small" label="用户姓名:" prop="name">
-            <el-input v-model="userInfo.userName"></el-input>
+          <el-form-item size="small" label="用户姓名:" prop="nickName">
+            <el-input prefix-icon="el-icon-female" v-model="userInfo.nickName"></el-input>
+          </el-form-item>
+          <el-form-item size="small" label="登录名:" prop="userName">
+            <el-input prefix-icon="el-icon-user" v-model="userInfo.userName"></el-input>
+          </el-form-item>
+          <el-form-item size="small" label="手机号码:" prop="phonenumber">
+            <el-input prefix-icon="el-icon-mobile-phone" v-model="userInfo.phonenumber"></el-input>
+          </el-form-item>
+          <el-form-item size="small" label="邮箱:" prop="email">
+            <el-input prefix-icon="el-icon-message" v-model="userInfo.email"></el-input>
+          </el-form-item>
+          <el-form-item label="性别:">
+            <el-radio-group v-model="userInfo.sex">
+              <el-radio label="0">男</el-radio>
+              <el-radio label="1">女</el-radio>
+            </el-radio-group>
           </el-form-item>
         </el-form>
       </span>
@@ -73,21 +90,36 @@
 <script>
   import {getUserList, deleteUserById, getDeptList} from "../../../../lib/api/user";
 
+  import {phonenumberValidate, emailValidate} from '../../../../utils/data_validate_rules'
+
   export default {
     name: "User",
     data() {
       return {
         userRules: {
-          name: [
+          nickName: [
             {required: true, message: '姓名不能为空', trigger: 'blur'},
-            {min: 2, max: 64, message: '姓名长度不符合规则 2 ~ 64', trigger: 'blur'}
+            {min: 3, max: 16, message: '姓名长度不符合规则 3 ~ 16', trigger: 'blur'}
           ],
+          userName: [
+            {required: true, message: '登录名不能为空', trigger: 'blur'},
+            {min: 3, max: 16, message: '登录名长度不符合规则 3 ~ 16', trigger: 'blur'}
+          ],
+          phonenumber: [
+            {validator: phonenumberValidate, trigger: 'blur'}
+          ],
+          email: [
+            {validator: emailValidate, trigger: 'blur'}
+          ]
         },
         tableData: [],
         editUserDialog: false,
         deptList: [],
         userInfo: {
-          userName: ''
+          nickName: '',
+          userName: '',
+          phonenumber: '',
+          sex: '0'
         },
         userCondition: {
           phonenumber: '',
@@ -193,11 +225,15 @@
         }
       },
       userRefresh() {
-        this.userCondition.deptId = ''
         this.getUserList();
       },
       openUserDialog() {
         this.editUserDialog = true
+      },
+      userReset () {
+        this.userCondition.userName = '';
+        this.userCondition.phonenumber ='';
+        this.userCondition.deptId = '';
       },
       save() {
         this.$refs['userInfo'].validate((valid) => {

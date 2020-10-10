@@ -8,6 +8,7 @@ import cn.fllday.learn.pojo.user.SysUser;
 import cn.fllday.learn.pojo.user.dto.BaseDTO;
 import cn.fllday.learn.pojo.user.dto.SysUserDTO;
 import com.github.pagehelper.PageInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -22,6 +23,7 @@ import java.util.Objects;
  * @Author: gssznb
  */
 @Service
+@Slf4j
 public class UserServiceImpl implements UserService {
 
 
@@ -32,7 +34,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    @Cacheable(key = "'SysUser_'+args", value = "SysUser")
+    @Cacheable(key = "'SysUser_'+args[0]", value = "SysUser")
     public SysUser getUserByUsername(String username) {
         Example example = new Example(SysUser.class);
         example.createCriteria()
@@ -60,7 +62,9 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
+    @Cacheable(key = "'SysUser_'+args[0]", value = "SysUser")
     public PageInfo<SysUser> queryUserByPage(SysUserDTO dto) {
+
         setPageSize(dto);
         Example example = new Example(SysUser.class);
         Example.Criteria criteria = example.createCriteria()
@@ -69,7 +73,7 @@ public class UserServiceImpl implements UserService {
             criteria.andLike("phonenumber", "%"+dto.getPhonenumber()+"%");
         }
         if (!StringUtils.isEmpty(dto.getUserName())) {
-            criteria.andLike("userName","%"+ dto.getUserName()+"%");
+            criteria.andLike("nickName","%"+ dto.getUserName()+"%");
         }
         if (dto.getDeptId() != null && dto.getDeptId() != 0) {
             criteria.andEqualTo("deptId", dto.getDeptId());

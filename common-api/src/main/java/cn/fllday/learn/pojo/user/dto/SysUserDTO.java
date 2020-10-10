@@ -59,8 +59,6 @@ public class SysUserDTO extends BaseDTO{
 
     private String remark;
 
-    @NotNull(message = "用户角色不能为空")
-    @Size(min = 1, message = "用户角色至少选择 {min} 个")
-    private List<Integer> roleIds;
+
 
 }

@@ -7,13 +7,34 @@ import lombok.NoArgsConstructor;
 /**
  * @Author: gssznb
  */
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+
 public class BaseDTO {
 
-    private Integer page = 0;
+    private Integer page;
 
-    private Integer size = 15;
+    private Integer size;
 
+    public BaseDTO() {
+    }
+
+    public BaseDTO(Integer page, Integer size) {
+        this.page = page;
+        this.size = size;
+    }
+
+    public Integer getPage() {
+        return page;
+    }
+
+    public void setPage(Integer page) {
+        this.page = page;
+    }
+
+    public Integer getSize() {
+        return size;
+    }
+
+    public void setSize(Integer size) {
+        this.size = size;
+    }
 }

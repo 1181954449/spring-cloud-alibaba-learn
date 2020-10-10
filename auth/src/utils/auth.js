@@ -1,4 +1,5 @@
 import store from '../store/index'
+import vm from '../main'
 
 function getToken() {
 	return store.getters["UserDetails/getToken"]
@@ -16,7 +17,7 @@ function logout() {
   store.dispatch('UserDetails/actSetUserDetails', {})
   store.dispatch('UserDetails/actSetMenus', [])
   store.dispatch('Tabs/actClearTab')
-  this.$router.push("/login")
+  vm.$router.push("/login")
 }
 
 // 获取vuex 中的权限数组

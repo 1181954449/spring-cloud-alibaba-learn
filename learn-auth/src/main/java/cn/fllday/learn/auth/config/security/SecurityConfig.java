@@ -1,6 +1,7 @@
 package cn.fllday.learn.auth.config.security;
 
 import cn.fllday.learn.auth.config.filter.JwtAuthenticationTokenFilter;
+import cn.fllday.learn.auth.config.filter.LoginMaxCountFilter;
 import cn.fllday.learn.auth.config.filter.VerifyFilter;
 import cn.fllday.learn.auth.utils.verify.VerifyCode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,10 +88,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private VerifyFilter verifyFilter;
+    @Autowired
+    private LoginMaxCountFilter loginMaxCountFilter;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-//        http.addFilterBefore(verifyFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(verifyFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterAfter(loginMaxCountFilter, VerifyFilter.class);
         http
                 .csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint)
@@ -141,9 +145,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     /**
      * 强散列哈希加密实现
-     * @return
+     * @return 密码加密
      */
-    public BCryptPasswordEncoder encoder(){
+    private BCryptPasswordEncoder encoder(){
         return new BCryptPasswordEncoder();
     }
 }

@@ -180,7 +180,7 @@
     width: 800px;
     height: 500px;
     background-color: rgba(255, 255, 255, 0.9);
-    box-shadow: 0px 0px 35px #555555;
+    box-shadow: 0 0 35px #555555;
   }
 
   .login {

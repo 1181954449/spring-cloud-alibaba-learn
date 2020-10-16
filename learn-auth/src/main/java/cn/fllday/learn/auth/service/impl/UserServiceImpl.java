@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
         Example example = new Example(SysUser.class);
         example.createCriteria()
                 .andEqualTo("userName", username)
-                .andEqualTo("delFlag", "0");
+                .andEqualTo("delFlag", Constants.UserConstants.DEL_FLAG_YES);
         SysUser sysUser = sysUserMapper.selectOneByExample(example);
         return sysUser;
     }

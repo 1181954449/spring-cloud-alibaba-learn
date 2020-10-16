@@ -155,7 +155,8 @@
           {
             prop: 'sex',
             label: '性别',
-            width: '70'
+            width: '70',
+            dict: 'jlkjaklsjdlkjlkj'
           },
           {
             prop: 'deptId',

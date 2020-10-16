@@ -7,12 +7,19 @@ import java.io.Serializable;
  */
 public enum  ServiceExceptionEnum implements Serializable {
 
+
+
     // ========== 系统级别 ==========
     SUCCESS(0, "成功"),
     SYS_ERROR(2001001000, "服务器端发生异常"),
     SYS_REPEAT_REQUEST_ERROR(2001001001, "请勿重复请求"),
     SYS_LIMIT_REQUEST_ERROR(2001001002, "请求过于频繁，请稍后再试"),
-    CUSTOM_ERROR(0, "自定义信息") {},
+    CUSTOM_ERROR(0, "自定义信息") {
+        @Override
+        public void setMsg(String msg) {
+            super.setMsg(msg);
+        }
+    },
 
     // ==========  授权服务  ==============
     AUTH_ERROR(1001001001, "未授权"),
@@ -25,6 +32,13 @@ public enum  ServiceExceptionEnum implements Serializable {
     AUTH_NOT_SUPPORT_IMPLICIT_ERROR(1001001008, "不支持隐式授权"),
     AUTH_UNKNOW_GRANT_TYPE_ERROR(1001001009, "未知的授权方式"),
     AUTH_CODE_ERROR(1001001010, "验证码错误"),
+    AUTH_MAX_COUNT_ERROR(1001001011, "登录失败错误次数过多。请二十分钟后再试") {
+        @Override
+        public void setMsg(String expire) {
+            String msg = "登录失败错误次数过多。请 "+expire+" 秒后再试";
+            super.setMsg(msg);
+        }
+    },
 
     // ==========  用户服务  ======================
     USER_NOT_FOUNT_ERROR(1001002001, "用户不存在"),

@@ -79,9 +79,11 @@ axios.interceptors.request.use(config => {
 })
 
 axios.interceptors.response.use(response => {
-  hideFullScreenLoading()
-  hideFullScreenLoading()
-  let respBody = response.data
+  hideFullScreenLoading();
+  if (!response) {
+    return;
+  }
+  let respBody = response['data'];
   let cusStatus = respBody.status
   if (cusStatus === 1001001002) {
     logout();
@@ -90,11 +92,11 @@ axios.interceptors.response.use(response => {
     return Promise.resolve(response);
   } else {
     tipMsg(respBody.msg);
-    return Promise.reject(response);
+    return Promise.resolve(response);
   }
 }, error => {
   hideFullScreenLoading()
-  let statusCode = error.response.status;
+  let statusCode = error.status;
   // 如果状态没有授权， 那么跳转到登陆页面
   switch (statusCode) {
     case 401:
@@ -154,16 +156,7 @@ export function post(url, params) {
   return new Promise((resolve, reject) => {
     axios.post(url, params).then(res => {
       console.log(res)
-      if (res.data.status === 0) {
-        resolve(res);
-      } else {
-        console.log(res)
-        Message({
-          message: res.msg,
-          type: 'error'
-        })
-        resolve(res);
-      }
+      resolve(res);
     }).catch(err => {
       console.log(err)
       Message({

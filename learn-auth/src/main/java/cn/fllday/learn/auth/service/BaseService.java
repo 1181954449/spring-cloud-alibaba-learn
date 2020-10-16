@@ -2,6 +2,7 @@ package cn.fllday.learn.auth.service;
 
 import cn.fllday.learn.exception.CustomException;
 import cn.fllday.learn.pojo.user.dto.BaseDTO;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.ObjectId;
 import cn.hutool.core.util.IdUtil;
 import com.github.pagehelper.PageHelper;
@@ -11,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import java.util.Date;
 
 /**
  * @author gssznb
@@ -61,5 +64,9 @@ public interface BaseService {
 
     default String getUniqueId() {
         return IdUtil.objectId();
+    }
+
+    default Date getNow(){
+        return DateUtil.date();
     }
 }

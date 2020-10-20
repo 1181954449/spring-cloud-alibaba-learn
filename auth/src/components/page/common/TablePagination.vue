@@ -74,25 +74,30 @@
         if (!column.className) {
           return cellValue;
         }
-        if (!this.dicts[dict]) {
-          this.getDictItemsPage(dict)
-        }
-        // while (!this.dicts[dict]) {}
-        let itemValue = row[column.property]
-        // 临时变量保存 字典集合
-        let dictTmp =  this.dicts[dict];
-        for (let i = 0; i < dictTmp.length; i++) {
-          if (dictTmp[i][itemValue]) {
-            return dictTmp[i][itemValue];
+        if (!this.$store.getters["DictStore/getDictItems"](dict)) {
+          return cellValue
+        } else {
+          let dictTmp = this.$store.getters["DictStore/getDictItems"](dict)
+          let itemValue = row[column.property]
+          for (let i = 0; i < dictTmp.length; i++) {
+            if (dictTmp[i][itemValue]) {
+              return dictTmp[i][itemValue];
+            }
           }
         }
+        // if (!this.dicts[dict]) {
+        //   this.getDictItemsPage(dict)
+        // }
+        // // while (!this.dicts[dict]) {}
+        // let itemValue = row[column.property]
+        // // 临时变量保存 字典集合
+        // let dictTmp =  this.dicts[dict];
+        // for (let i = 0; i < dictTmp.length; i++) {
+        //   if (dictTmp[i][itemValue]) {
+        //     return dictTmp[i][itemValue];
+        //   }
+        // }
         return cellValue;
-      },
-      async getDictItemsPage(dict) {
-        await getDictItems('/dict/item/' + dict).then((res) => {
-          this.dicts[dict] = res.data.data
-          console.log(this.dicts)
-        })
       }
     }
   }

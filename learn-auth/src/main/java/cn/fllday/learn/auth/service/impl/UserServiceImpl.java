@@ -10,12 +10,15 @@ import cn.fllday.learn.pojo.user.dto.SysUserDTO;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -55,14 +58,19 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public boolean addUser(SysUser sysUser) {
+    public boolean addUser(SysUserDTO dto) {
+        SysUser sysUser = new SysUser();
+        BeanUtils.copyProperties(dto, sysUser);
+        sysUser.setDelFlag(Constants.UserConstants.DEL_FLAG_YES);
+        sysUser.setStatus(Constants.UserConstants.UN_LOCKED_STATUS);
+        sysUser.setCreateTime(new Date());
+        sysUser.setCreateBy(getLoginUsername());
         int insert = sysUserMapper.insert(sysUser);
         return insert > 0;
     }
 
 
     @Override
-    @Cacheable(key = "'SysUser_'+args[0]", value = "SysUser")
     public PageInfo<SysUser> queryUserByPage(SysUserDTO dto) {
 
         setPageSize(dto);

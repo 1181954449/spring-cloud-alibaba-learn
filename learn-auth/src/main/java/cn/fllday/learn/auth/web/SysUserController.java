@@ -74,6 +74,7 @@ public class SysUserController {
 
     @PostMapping(value = "")
     public AjaxResult registerUser(@Validated @RequestBody SysUserDTO dto) {
+        userService.addUser(dto);
         return AjaxResult.success();
     }
 

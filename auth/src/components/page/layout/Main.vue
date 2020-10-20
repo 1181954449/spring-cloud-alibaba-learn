@@ -7,7 +7,9 @@
         <el-breadcrumb-item v-for="b in breadcrumbs">{{ b }}</el-breadcrumb-item>
       </el-breadcrumb>
       <div class="container" style="margin-top: 15px;">
-        <router-view></router-view>
+        <keep-alive>
+          <router-view></router-view>
+        </keep-alive>
       </div>
     </div>
   </el-main>
@@ -22,7 +24,8 @@
     components: {Tags},
     data() {
       return {
-        breadcrumbs: []
+        breadcrumbs: [],
+        transitionStyle:'slide-left'
       }
     },
     mounted() {
@@ -110,5 +113,15 @@
     border-radius: 0;
     background: rgba(0, 0, 0, 0.1);
     position: fixed;
+  }
+  .slide-left-enter, .slide-right-leave-active {
+    opacity: 0;
+    -webkit-transform: translate(30px, 0);
+    transform: translate(30px, 0);
+  }
+  .slide-left-leave-active, .slide-right-enter {
+    opacity: 0;
+    -webkit-transform: translate(-30px, 0);
+    transform: translate(-30px, 0);
   }
 </style>

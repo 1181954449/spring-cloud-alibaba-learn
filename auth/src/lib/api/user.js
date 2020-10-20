@@ -1,8 +1,10 @@
-import {get, deletes} from '../http/request'
+import {get, deletes, post} from '../http/request'
 
 
-export const getUserList = (url, params) => get(url, params)
+export const getUserList = (params) => get("/user/", params)
 
-export const deleteUserById = (url, params) => deletes(url, params)
+export const deleteUserById = (params) => deletes('/user/delete', params)
 
-export const getDeptList = (url) => get(url, {})
+export const getDeptList = () => get('/dept/list', {})
+
+export const addUser = (params) => post('/user', params)

@@ -44,7 +44,7 @@
 </template>
 
 <script>
-  import {getDictPage} from "../../../../lib/api/dict";
+  import {getDictPage, getDictItems} from "../../../../lib/api/dict";
 
   export default {
 		name: "Dict",
@@ -73,7 +73,8 @@
           },
           {
             prop: 'delFlag',
-            label: '状态'
+            label: '状态',
+            dict: 'zhuangtai'
           },
           {
             prop: 'createBy',
@@ -86,6 +87,9 @@
         ],
       }
     },
+    created() {
+		  getDictItems("zhuangtai")
+    },
     mounted() {
 		  this.getPage()
     },
@@ -97,7 +101,7 @@
 
       },
       getPage() {
-		    getDictPage('/dict/', this.conditionDict).then((res) => {
+		    getDictPage( this.conditionDict).then((res) => {
 		      this.pager = res.data.data
         })
       },

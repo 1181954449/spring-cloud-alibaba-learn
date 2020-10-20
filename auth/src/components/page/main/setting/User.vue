@@ -1,33 +1,25 @@
 <template>
   <div>
     <el-form :inline="true" :model="userCondition" class="demo-form-inline">
-      <el-form-item label="手机号">
+      <el-form-item size="small" label="手机号">
         <el-input prefix-icon="el-icon-mobile-phone" v-model="userCondition.phonenumber" size="small"
                   placeholder="手机号"></el-input>
       </el-form-item>
-      <el-form-item label="用户名">
+      <el-form-item size="small" label="用户名">
         <el-input prefix-icon="el-icon-user" v-model="userCondition.userName" size="small" placeholder="用户名"></el-input>
       </el-form-item>
-      <el-form-item label="部门">
-        <el-select size="small" filterable v-model="userCondition.deptId" placeholder="请选择">
-          <el-option
-            v-for="dept in deptList"
-            :key="dept.deptId"
-            :label="dept.detpName"
-            :value="dept.deptId">
-          </el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item>
+      <com-box :dict-obj="dictObj" v-model="userCondition.deptId"></com-box>
+
+      <el-form-item size="small">
         <el-button type="primary" icon="el-icon-search" @click="userSearch" size="small">查询</el-button>
       </el-form-item>
-      <el-form-item>
+      <el-form-item size="small">
         <el-button type="primary" icon="el-icon-refresh-left" @click="userReset" size="small">重置</el-button>
       </el-form-item>
-      <el-form-item>
+      <el-form-item size="small">
         <el-button type="primary" icon="el-icon-refresh" @click="userRefresh" size="small">刷新</el-button>
       </el-form-item>
-      <el-form-item>
+      <el-form-item size="small">
         <el-button type="primary" icon="el-icon-circle-plus-outline" @click="openUserDialog" size="small">添加用户</el-button>
       </el-form-item>
     </el-form>
@@ -69,16 +61,20 @@
           <el-form-item size="small" label="邮箱:" prop="email">
             <el-input prefix-icon="el-icon-message" v-model="userInfo.email"></el-input>
           </el-form-item>
-          <el-form-item label="性别:">
-            <el-radio-group v-model="userInfo.sex">
-              <el-radio label="0">男</el-radio>
-              <el-radio label="1">女</el-radio>
-            </el-radio-group>
+          <com-radio-group dict-id="jlkjaklsjdlkjlkj" rule="sex" v-model="userInfo.sex"></com-radio-group>
+          <el-form-item size="small" label="密码:" prop="password">
+            <el-input prefix-icon="el-icon-view" type="password" v-model="userInfo.password"></el-input>
           </el-form-item>
+           <el-form-item size="small" label="重复密码:" prop="repeatPassword">
+            <el-input prefix-icon="el-icon-view" type="password" v-model="userInfo.repeatPassword"></el-input>
+          </el-form-item>
+          <com-box :dict-obj="dictObj"
+                   v-model="userInfo.deptId"
+                   :rule="'deptId'"></com-box>
         </el-form>
       </span>
       <span slot="footer" class="dialog-footer">
-        <el-button size="small" @click="editUserDialog = false">取 消</el-button>
+        <el-button size="small" @click="cancel()">取 消</el-button>
         <el-button type="primary" size="small" @click="save()">确 定</el-button>
       </span>
     </el-dialog>
@@ -88,13 +84,34 @@
 </template>
 
 <script>
-  import {getUserList, deleteUserById, getDeptList} from "../../../../lib/api/user";
+  import {getUserList, deleteUserById, getDeptList, addUser} from "../../../../lib/api/user";
 
   import {phonenumberValidate, emailValidate} from '../../../../utils/data_validate_rules'
+
+  import {getDictItems} from "../../../../lib/api/dict";
 
   export default {
     name: "User",
     data() {
+      var validatePass = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请输入密码'));
+        } else {
+          if (this.userInfo.repeatPassword !== '') {
+            this.$refs.userInfo.validateField('repeatPassword');
+          }
+          callback();
+        }
+      };
+      var validatePass2 = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请再次输入密码'));
+        } else if (value !== this.userInfo.password) {
+          callback(new Error('两次输入密码不一致!'));
+        } else {
+          callback();
+        }
+      };
       return {
         userRules: {
           nickName: [
@@ -103,23 +120,47 @@
           ],
           userName: [
             {required: true, message: '登录名不能为空', trigger: 'blur'},
-            {min: 3, max: 16, message: '登录名长度不符合规则 3 ~ 16', trigger: 'blur'}
+            {min: 3, max: 16, message: '登录名长度不符合规则 6 ~ 16', trigger: 'blur'}
           ],
           phonenumber: [
-            {validator: phonenumberValidate, trigger: 'blur'}
+            {validator: phonenumberValidate, trigger: 'blur'},
+            {required: true, message: '手机号码不能为空', trigger: 'blur'},
           ],
           email: [
-            {validator: emailValidate, trigger: 'blur'}
+            {validator: emailValidate, trigger: 'blur'},
+            {required: true, message: '邮箱账号不能为空', trigger: 'blur'},
+          ],
+          password: [
+            {validator: validatePass, trigger: 'blur'},
+            {required: true, message: '密码不能为空', trigger: 'blur'},
+          ],
+          repeatPassword: [
+            {validator: validatePass2, trigger: 'blur'},
+            {required: true, message: '重复密码不能为空', trigger: 'blur'},
+          ],
+          deptId: [
+            {required: true, message: '请分配部门', trigger: 'change' }
+          ],
+          sex: [
+            {required: true, message: '请选择性别', trigger: 'change' }
           ]
         },
         tableData: [],
         editUserDialog: false,
-        deptList: [],
+        dictObj: {
+          dict: {
+            dictName: ''
+          },
+          items: []
+        },
         userInfo: {
           nickName: '',
           userName: '',
           phonenumber: '',
-          sex: '0'
+          sex: '',
+          password: '',
+          repeatPassword: '',
+          deptId: ''
         },
         userCondition: {
           phonenumber: '',
@@ -172,13 +213,24 @@
     },
     methods: {
       getUserList() {
-        getUserList("/user/", this.userCondition).then((res) => {
+        getUserList(this.userCondition).then((res) => {
           this.pager = res.data.data
         })
       },
       getDeptOptions() {
-        getDeptList('/dept/list').then((res) => {
-          this.deptList = res.data.data
+        getDeptList().then((res) => {
+          let list = res.data.data
+          let deptList = list.map(e => {
+            return {
+              itemValue: e.deptId,
+              itemText: e.detpName,
+            }
+          })
+          let deptLable = {
+            dictName: '部门',
+          }
+          this.dictObj.dict = deptLable
+          this.dictObj.items = deptList
         })
       },
       changeSize(size) {
@@ -201,7 +253,7 @@
           cancelButtonText: '取消',
           type: 'warning',
         }).then(() => {
-          deleteUserById('/user/delete', {
+          deleteUserById({
             id: row.userId
           }).then(res => {
             this.$message({
@@ -221,9 +273,7 @@
 
       },
       userSearch() {
-        if (this.userCondition.userName || this.userCondition.phonenumber || this.userCondition.deptId) {
-          this.getUserList();
-        }
+        this.getUserList();
       },
       userRefresh() {
         this.getUserList();
@@ -235,23 +285,36 @@
         this.userCondition.userName = '';
         this.userCondition.phonenumber ='';
         this.userCondition.deptId = '';
+        this.getUserList();
       },
       save() {
         this.$refs['userInfo'].validate((valid) => {
           if (valid) {
-
+            addUser(this.userInfo).then((res) => {
+              console.log(res)
+            })
           } else {
             return false
           }
         })
       },
       handleClose() {
+        this.editUserDialog = false
+        if (this.$refs['userInfo']!==undefined) {
+          this.$refs['userInfo'].resetFields();
+        }
+      },
+      cancel () {
+        this.handleClose()
       }
+    },
+    created() {
+      getDictItems('jlkjaklsjdlkjlkj')
+      this.getDeptOptions()
     },
     mounted() {
       this.getUserList()
-      this.getDeptOptions()
-    }
+    },
   }
 </script>
 

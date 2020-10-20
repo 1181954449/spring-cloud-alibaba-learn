@@ -37,7 +37,7 @@ public class DictServiceImpl implements DictService {
         SysDict sysDict = new SysDict();
         BeanUtils.copyProperties(dto, sysDict);
         sysDict.setId(getUniqueId());
-        sysDict.setCreateBy(getUsername());
+        sysDict.setCreateBy(getLoginUsername());
         sysDict.setCreateTime(getNow());
         sysDictMapper.insert(sysDict);
     }
@@ -47,9 +47,15 @@ public class DictServiceImpl implements DictService {
         SysDictItem sysDictItem = new SysDictItem();
         BeanUtils.copyProperties(dto, sysDictItem);
         sysDictItem.setId(getUniqueId());
-        sysDictItem.setCreateBy(getUsername());
+        sysDictItem.setCreateBy(getLoginUsername());
         sysDictItem.setCreateTime(getNow());
         sysDictItemMapper.insert(sysDictItem);
+    }
+
+    @Override
+    public SysDict getDictById(String dictId) {
+        SysDict sysDict = sysDictMapper.selectByPrimaryKey(dictId);
+        return sysDict;
     }
 
     @Override
@@ -70,10 +76,7 @@ public class DictServiceImpl implements DictService {
 
     @Override
     public List<JSONObject> getDictItemById(String dictId) {
-        Example example = new Example(SysDictItem.class);
-        Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("dictId", dictId);
-        List<SysDictItem> sysDictItems = sysDictItemMapper.selectByExample(example);
+        List<SysDictItem> sysDictItems = getDictItemsList(dictId);
         return sysDictItems.stream().map(item -> {
             String itemValue = item.getItemValue();
             String itemText = item.getItemText();
@@ -81,5 +84,28 @@ public class DictServiceImpl implements DictService {
             jsonObject.put(itemValue, itemText);
             return jsonObject;
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    public JSONObject getDictItems(String dictId) {
+        List<SysDictItem> items = getDictItemsList(dictId);
+        SysDict sysDict = getDictById(dictId);
+        JSONObject resultJson = new JSONObject();
+        resultJson.put("dict", sysDict);
+        resultJson.put("items", items);
+        return resultJson;
+    }
+
+    /**
+     * 封装获取 dictItems 集合
+     * @param dictId
+     * @return
+     */
+    private List<SysDictItem> getDictItemsList(String dictId) {
+        Example example = new Example(SysDictItem.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("dictId", dictId);
+        List<SysDictItem> sysDictItems = sysDictItemMapper.selectByExample(example);
+        return sysDictItems;
     }
 }

@@ -1,3 +1,6 @@
+import vm from '../../main'
+
+
 import {get, post} from "../http/request";
 
 /**
@@ -6,19 +9,30 @@ import {get, post} from "../http/request";
  * @param params
  * @returns {Promise<unknown>}
  */
-export const getDictPage = (url, params) => get(url, params)
+export const getDictPage = (params) => get('/dict/', params)
 
 /**
  * 获取字典合集
  * @param url
  * @returns {Promise<unknown>}
  */
-export const getDictItems = async (url) => {
-  await get(url, {}).then((res) => {
-    return res.data.data;
-  })
+export const getDictItems = (dictId) => {
+  if (!vm.$store.getters["DictStore/getDictItems"](dictId)) {
+    get('/dict/item/' + dictId, {}).then((res) => {
+      vm.$store.dispatch('DictStore/actSetDictItem',{
+        dictId: dictId,
+        dictItems: res.data.data
+      })
+    })
+  }
 }
 
+/**
+ *
+ * @param dictId
+ * @returns {Promise | Promise<unknown>}
+ */
+export const getDictItemsByDictId = (dictId) => get('/dict/dictItems/'+dictId, {})
 /**
  * 添加字典
  * @param url

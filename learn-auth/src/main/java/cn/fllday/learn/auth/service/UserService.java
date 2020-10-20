@@ -28,10 +28,10 @@ public interface UserService extends BaseService {
 
     /**
      * 添加用户
-     * @param sysUser
+     * @param dto
      * @return
      */
-    boolean addUser(SysUser sysUser);
+    boolean addUser(SysUserDTO dto);
 
     /**
      * 根据 页码 和 数量 查询分页

@@ -53,7 +53,7 @@ public interface BaseService {
         PageHelper.startPage(page, pageSize);
     }
 
-    default String getUsername() {
+    default String getLoginUsername() {
         log.info("======================= 获取用户登录信息 ================");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && !(authentication instanceof AnonymousAuthenticationToken)) {

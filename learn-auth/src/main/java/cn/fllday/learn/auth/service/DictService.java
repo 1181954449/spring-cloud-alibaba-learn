@@ -27,6 +27,13 @@ public interface DictService extends BaseService {
     void addDictItem(SysDictItemDTO dto);
 
     /**
+     * 获取单个 SysDict
+     * @param dictId
+     * @return
+     */
+    SysDict getDictById(String dictId);
+
+    /**
      * 字典分页
      * @param dto  条件
      * @return
@@ -39,5 +46,13 @@ public interface DictService extends BaseService {
      * @return
      */
     List<JSONObject> getDictItemById(String dictId);
+
+
+    /**
+     * 查询对应的字典集合
+     * @param dictId
+     * @return
+     */
+    JSONObject getDictItems(String dictId);
 
 }

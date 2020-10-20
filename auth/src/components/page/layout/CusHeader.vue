@@ -81,6 +81,7 @@
                     this.actSetMenus([])
                     this.actClearTab()
 		            this.$router.push("/login")
+                this.actSetClearDictItems()
 		            this.$message({
 			            type: 'success',
 			            message: '成功退出登录!'
@@ -103,11 +104,15 @@
 				'actSetPerms',
 				'actSetToken',
 				'actSetIsLogin',
-                'actSetMenus'
+                'actSetMenus',
+
 			]),
             ...mapActions('Tabs', [
             	'actClearTab'
-            ])
+            ]),
+      ...mapActions('DictStore', [
+        'actSetClearDictItems'
+      ])
 		},
 		computed: {
 			isMenu() {

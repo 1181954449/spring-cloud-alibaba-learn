@@ -13,6 +13,9 @@ import 'nprogress/nprogress.css'
 import store from './store/index'
 import Auth from './direct/auth'
 import {getRouters} from './utils/router-utils'
+import ComBox from "./components/page/common/ComBox";
+import RadioGroup from "./components/page/common/ComRadioGroup";
+import ComRadioGroup from "./components/page/common/ComRadioGroup";
 
 
 /**
@@ -49,6 +52,8 @@ Vue.use(ElementUI)
 Vue.use(Auth)
 
 Vue.component("TabPage", TablePagination)
+Vue.component("ComBox", ComBox)
+Vue.component("ComRadioGroup", ComRadioGroup)
 
 /* eslint-disable no-new */
 var vm = new Vue({

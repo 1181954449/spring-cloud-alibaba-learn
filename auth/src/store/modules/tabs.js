@@ -2,7 +2,6 @@
  * 存储 tab 切换页
  * @type {{tabs: []}}
  */
-import fa from "element-ui/src/locale/lang/fa";
 
 const state = {
 	tabs: [

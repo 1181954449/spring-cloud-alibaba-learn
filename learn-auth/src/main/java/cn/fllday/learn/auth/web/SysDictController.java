@@ -50,4 +50,10 @@ public class SysDictController {
         List<JSONObject> dictItems = dictService.getDictItemById(dictId);
         return AjaxResult.success(dictItems);
     }
+
+    @GetMapping(value = "/dictItems/{dictId}")
+    public AjaxResult getDictItemsByDictId(@PathVariable(value = "dictId") @NotNull(message = "字典id 不能为空")String dictId) {
+        JSONObject resultJson = dictService.getDictItems(dictId);
+        return AjaxResult.success(resultJson);
+    }
 }

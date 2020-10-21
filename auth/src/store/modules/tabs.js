@@ -2,7 +2,6 @@
  * 存储 tab 切换页
  * @type {{tabs: []}}
  */
-
 const state = {
 	tabs: [
 		{
@@ -12,11 +11,20 @@ const state = {
 			active: true
 		}
 	],
+  keepLive: [
+  ]
 }
 
 const getters = {
 
-	/**
+  /**
+   * 获取keeplive
+   */
+  getKeepLive (state) {
+    return state.keepLive
+  },
+
+  /**
 	 *
 	 * @param state
 	 * @returns {[]|*[]}
@@ -66,7 +74,7 @@ const mutations = {
 	 */
 	addTabs (state, tab) {
 		let index;
-
+    debugger
 		state.tabs.forEach((e,i) => {
 			e.active = false
 			if (e.path === tab.path) {
@@ -74,6 +82,7 @@ const mutations = {
 			}
 		})
 		index !== undefined ? state.tabs[index].active = true : state.tabs.push(tab)
+    !state.keepLive.includes(tab.name) && tab.name !== 'Analyzer' ? state.keepLive.push(tab.name) : ''
 	},
 	/**
 	 * 删除索引
@@ -88,6 +97,7 @@ const mutations = {
 			}else {
 				state.tabs.splice(index, 1)
 			}
+      state.keepLive.splice(index-1, 1)
 		}
 	},
 	/**

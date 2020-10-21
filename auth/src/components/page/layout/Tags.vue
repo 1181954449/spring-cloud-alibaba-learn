@@ -50,7 +50,8 @@
             'id': menu.menuId,
             'path': menu.path,
             'title': menu.menuName,
-            'active': true
+            'active': true,
+            'name': menu.name
           })
         }
       },

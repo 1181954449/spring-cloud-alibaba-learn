@@ -7,7 +7,7 @@
         <el-breadcrumb-item v-for="b in breadcrumbs">{{ b }}</el-breadcrumb-item>
       </el-breadcrumb>
       <div class="container" style="margin-top: 15px;">
-        <keep-alive>
+        <keep-alive :include="$store.getters['Tabs/getKeepLive']">
           <router-view></router-view>
         </keep-alive>
       </div>

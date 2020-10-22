@@ -74,7 +74,6 @@ const mutations = {
 	 */
 	addTabs (state, tab) {
 		let index;
-    debugger
 		state.tabs.forEach((e,i) => {
 			e.active = false
 			if (e.path === tab.path) {

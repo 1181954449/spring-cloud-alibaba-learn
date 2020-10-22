@@ -29,13 +29,14 @@ let loadingAnimat;
 let needLoadingRequesting = 0;
 
 // 开始加载动画方法
-function startLoading() {
+function startLoading(ele) {
+  let showEle = ele?document.querySelector("#"+ele):undefined
   loadingAnimat = Loading.service({
     lock: true,
     text: 'Loading',
     spinner: 'el-icon-loading',
     background: 'rgba(0, 0, 0, 0.7)',
-    target: document.querySelector("#default-loading") || document.querySelector("#warp")
+    target: showEle || document.querySelector("#default-loading") || document.querySelector("#warp")
   })
 }
 
@@ -44,9 +45,9 @@ function endLoading() {
   loadingAnimat.close()
 }
 
-function showFullScreenLoading() {
+function showFullScreenLoading(ele) {
   if (needLoadingRequesting === 0) {
-    startLoading();
+    startLoading(ele);
   }
   needLoadingRequesting++
 }
@@ -64,11 +65,11 @@ function hideFullScreenLoading() {
 
 axios.interceptors.request.use(config => {
   if (!config.isLoading) { // 如果配置了isLoading: false，则不显示loading
-    showFullScreenLoading()
+    showFullScreenLoading(config.ele)
   }
   console.log('============请求开始，设置请求头=================')
   // 请求前设置请求头
-  config.headers['token'] = 'Bearer ' + vm.$store.getters["UserDetails/getToken"]
+  config.headers['token'] = vm.$store.getters["UserDetails/getToken"]
   return config;
 }, error => {
   hideFullScreenLoading()
@@ -123,10 +124,12 @@ function tipMsg(msg) {
  * @param {url} 请求地址
  * @param {params} 请求参数
  */
-export function get(url, params) {
+export function get(url, params, config) {
   return new Promise((resolve, reject) => {
     axios.get(url, {
-      params: params
+      params: params,
+      isLoading: config?config.isLoading:undefined,
+      ele: config?config.ele:undefined
     }).then(res => {
       resolve(res)
     }).catch(err => {
@@ -135,10 +138,12 @@ export function get(url, params) {
   })
 }
 
-export function deletes(url, params) {
+export function deletes(url, params, config) {
   return new Promise(((resolve, reject) => {
     axios.delete(url, {
-      params: params
+      params: params,
+      isLoading: config?config.isLoading:undefined,
+      ele: config?config.ele:undefined
     }).then(res => {
       resolve(res)
     }).catch(err => {
@@ -152,11 +157,15 @@ export function deletes(url, params) {
  * @param {url} 请求地址
  * @param {params} 请求参数体
  */
-export function post(url, params) {
+export function post(url, params, config) {
   return new Promise((resolve, reject) => {
-    axios.post(url, params).then(res => {
+    axios.post(url, params, config).then(res => {
       console.log(res)
-      resolve(res);
+      if (res.data.status === 0){
+        resolve(res);
+      } else {
+
+      }
     }).catch(err => {
       console.log(err)
       Message({

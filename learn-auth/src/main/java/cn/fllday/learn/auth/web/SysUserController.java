@@ -8,12 +8,15 @@ import cn.fllday.learn.common.AjaxResult;
 import cn.fllday.learn.common.ServiceExceptionEnum;
 import cn.fllday.learn.pojo.user.SysUser;
 import cn.fllday.learn.pojo.user.dto.SysUserDTO;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -89,6 +92,26 @@ public class SysUserController {
     @PostMapping(value = "/locked")
     public AjaxResult lockedUser(@NotNull(message = "用户 id 不能为空") Long id) {
         userService.lockedUserById(id);
+        return AjaxResult.success();
+    }
+
+    @PostMapping(value = "/existByPhone")
+    public AjaxResult userExist(@NotBlank(message = "手机号码不能为空") String phonenumber) {
+        return AjaxResult.success(userService.getUserByPhoneIsExist(phonenumber));
+    }
+
+    @PostMapping(value = "/existByEmail")
+    public AjaxResult userExistEmail(@NotBlank(message = "邮箱不能为空") String email){
+        return AjaxResult.success(userService.getUserByEmailIsExist(email));
+    }
+
+    @PostMapping(value = "/existByUsername")
+    public AjaxResult userExistUsername(@NotBlank(message = "用户名不能为空") String username) {
+        return AjaxResult.success(userService.getUserByUsernameIsExist(username));
+    }
+
+    @PostMapping(value = "/uploadHeadImg")
+    public AjaxResult uploadHeaderImg(@RequestParam(value = "file")MultipartFile file) {
         return AjaxResult.success();
     }
 

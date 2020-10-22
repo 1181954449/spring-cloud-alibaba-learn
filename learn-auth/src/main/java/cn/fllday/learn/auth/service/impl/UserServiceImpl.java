@@ -4,16 +4,16 @@ import cn.fllday.learn.auth.mapper.SysUserMapper;
 import cn.fllday.learn.auth.mapper.SysUserRoleMapper;
 import cn.fllday.learn.auth.service.UserService;
 import cn.fllday.learn.auth.sys.consts.Constants;
+import cn.fllday.learn.exception.CustomException;
 import cn.fllday.learn.pojo.user.SysUser;
-import cn.fllday.learn.pojo.user.dto.BaseDTO;
 import cn.fllday.learn.pojo.user.dto.SysUserDTO;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
@@ -34,6 +34,8 @@ public class UserServiceImpl implements UserService {
     private SysUserMapper sysUserMapper;
     @Autowired
     private SysUserRoleMapper sysUserRoleMapper;
+    @Autowired
+    private PasswordEncoder encoder;
 
 
     @Override
@@ -56,15 +58,43 @@ public class UserServiceImpl implements UserService {
         return sysUserMapper.selectOneByExample(example);
     }
 
+    @Override
+    public Integer getUserByPhoneIsExist(String  phone) {
+        Example example = new Example(SysUser.class);
+        example.createCriteria()
+                .andEqualTo("phonenumber", phone);
+        return sysUserMapper.selectCountByExample(example);
+    }
+
+    @Override
+    public Integer getUserByEmailIsExist(String email) {
+        Example example = new Example(SysUser.class);
+        example.createCriteria()
+                .andEqualTo("email", email);
+        return sysUserMapper.selectCountByExample(example);
+    }
+
+    @Override
+    public Integer getUserByUsernameIsExist(String username) {
+        Example example = new Example(SysUser.class);
+        example.createCriteria()
+                .andEqualTo("userName", username);
+        return sysUserMapper.selectCountByExample(example);
+    }
 
     @Override
     public boolean addUser(SysUserDTO dto) {
+        Integer isExist = getUserByPhoneIsExist(dto.getPhonenumber());
+        if (isExist != null && isExist != 0) {
+            throw new CustomException("手机号码已经存在");
+        }
         SysUser sysUser = new SysUser();
         BeanUtils.copyProperties(dto, sysUser);
         sysUser.setDelFlag(Constants.UserConstants.DEL_FLAG_YES);
         sysUser.setStatus(Constants.UserConstants.UN_LOCKED_STATUS);
         sysUser.setCreateTime(new Date());
         sysUser.setCreateBy(getLoginUsername());
+        sysUser.setPassword(encoder.encode(sysUser.getPassword()));
         int insert = sysUserMapper.insert(sysUser);
         return insert > 0;
     }

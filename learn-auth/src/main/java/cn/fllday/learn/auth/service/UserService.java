@@ -2,6 +2,7 @@ package cn.fllday.learn.auth.service;
 
 import cn.fllday.learn.pojo.user.SysUser;
 import cn.fllday.learn.pojo.user.dto.SysUserDTO;
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 
 import java.util.List;
@@ -25,6 +26,27 @@ public interface UserService extends BaseService {
      * @return
      */
     SysUser getUserByPhone(String phone);
+
+    /**
+     * 根据手机号判断是否存在
+     * @param phone
+     * @return
+     */
+    Integer getUserByPhoneIsExist(String phone);
+
+    /**
+     * 根据邮箱查看是否存在
+     * @param email
+     * @return
+     */
+    Integer getUserByEmailIsExist(String email);
+
+    /**
+     * 根据用户查询是否存在
+     * @param username
+     * @return
+     */
+    Integer getUserByUsernameIsExist(String username);
 
     /**
      * 添加用户

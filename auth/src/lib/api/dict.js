@@ -18,7 +18,7 @@ export const getDictPage = (params) => get('/dict/', params)
  */
 export const getDictItems = (dictId) => {
   if (!vm.$store.getters["DictStore/getDictItems"](dictId)) {
-    get('/dict/item/' + dictId, {}).then((res) => {
+    get('/dict/item/' + dictId, {}, {isLogin: true}).then((res) => {
       vm.$store.dispatch('DictStore/actSetDictItem',{
         dictId: dictId,
         dictItems: res.data.data
@@ -32,7 +32,7 @@ export const getDictItems = (dictId) => {
  * @param dictId
  * @returns {Promise | Promise<unknown>}
  */
-export const getDictItemsByDictId = (dictId) => get('/dict/dictItems/'+dictId, {})
+export const getDictItemsByDictId = (dictId) => get('/dict/dictItems/'+dictId, {}, {isLoading: true})
 /**
  * 添加字典
  * @param url

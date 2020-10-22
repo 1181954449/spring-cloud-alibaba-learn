@@ -2,7 +2,7 @@ spring:
   datasource:
     username: root
     password: ROOT_12root
-    url: jdbc:mysql://www.fllday.cn:3306/learn?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8&useSSL=true
+    url: jdbc:mysql://www.fllday.cn:3306/learn?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8&useSSL=true&&autoReconnect=true
     driver-class-name: com.mysql.cj.jdbc.Driver
     druid:
       stat-view-servlet:

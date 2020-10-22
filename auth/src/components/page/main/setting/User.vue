@@ -42,13 +42,28 @@
       </el-table-column>
     </tab-page>
 
-    <el-dialog
+    <el-dialog id="loginUser"
       title="用户信息"
       :visible.sync="editUserDialog"
       width="30%"
-      :before-close="handleClose">
+      :before-close="handleClose"
+      :closeOnClickModal="false">
       <span>
-        <el-form ref="userInfo" :rules="userRules" :model="userInfo" label-width="100px">
+        <el-form autocomplete="off" ref="userInfo" :rules="userRules" :model="userInfo" label-width="100px">
+
+          <el-form-item size="small" label="头像上传:">
+            <el-upload
+              class="avatar-uploader"
+              action="http://localhost:9090/user/uploadHeadImg"
+              :show-file-list="false"
+              :on-success="handleAvatarSuccess"
+              :before-upload="beforeAvatarUpload"
+              :headers="{'token': $store.getters['UserDetails/getToken']}">
+              <img v-if="imageUrl" :src="imageUrl" class="avatar">
+              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload>
+          </el-form-item>
+
           <el-form-item size="small" label="用户姓名:" prop="nickName">
             <el-input prefix-icon="el-icon-female" v-model="userInfo.nickName"></el-input>
           </el-form-item>
@@ -75,7 +90,7 @@
       </span>
       <span slot="footer" class="dialog-footer">
         <el-button size="small" @click="cancel()">取 消</el-button>
-        <el-button type="primary" size="small" @click="save()">确 定</el-button>
+        <el-button type="primary" :loading="userAddLoading" size="small" @click="save()">确 定</el-button>
       </span>
     </el-dialog>
 
@@ -86,7 +101,7 @@
 <script>
   import {getUserList, deleteUserById, getDeptList, addUser} from "../../../../lib/api/user";
 
-  import {phonenumberValidate, emailValidate} from '../../../../utils/data_validate_rules'
+  import {phonenumberValidate, emailValidate, userNameValidate} from '../../../../utils/data_validate_rules'
 
   import {getDictItems} from "../../../../lib/api/dict";
 
@@ -120,7 +135,8 @@
           ],
           userName: [
             {required: true, message: '登录名不能为空', trigger: 'blur'},
-            {min: 3, max: 16, message: '登录名长度不符合规则 6 ~ 16', trigger: 'blur'}
+            {min: 3, max: 16, message: '登录名长度不符合规则 6 ~ 16', trigger: 'blur'},
+            {validator: userNameValidate, trigger: 'blur'}
           ],
           phonenumber: [
             {validator: phonenumberValidate, trigger: 'blur'},
@@ -153,6 +169,8 @@
           },
           items: []
         },
+        imageUrl:'',
+        userAddLoading: false,
         userInfo: {
           nickName: '',
           userName: '',
@@ -212,6 +230,21 @@
       }
     },
     methods: {
+      handleAvatarSuccess(res, file) {
+        this.imageUrl = URL.createObjectURL(file.raw);
+      },
+      beforeAvatarUpload(file) {
+        // const isJPG = file.type === 'image/jpeg';
+        const isLt2M = file.size / 1024 / 1024 < 2;
+
+        // if (!isJPG) {
+        //   this.$message.error('上传头像图片只能是 JPG 格式!');
+        // }
+        if (!isLt2M) {
+          this.$message.error('上传头像图片大小不能超过 2MB!');
+        }
+        return  isLt2M;
+      },
       getUserList() {
         getUserList(this.userCondition).then((res) => {
           this.pager = res.data.data
@@ -290,8 +323,12 @@
       save() {
         this.$refs['userInfo'].validate((valid) => {
           if (valid) {
+            this.userAddLoading = true
             addUser(this.userInfo).then((res) => {
-              console.log(res)
+              this.$message('添加成功');
+              this.userAddLoading = false
+              this.editUserDialog = false
+              this.userRefresh()
             })
           } else {
             return false
@@ -319,5 +356,27 @@
 </script>
 
 <style scoped>
-
+  .avatar-uploader >>>.el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader >>>.el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 100px;
+    height: 100px;
+    line-height: 100px;
+    text-align: center;
+  }
+  .avatar {
+    width: 100px;
+    height: 100px;
+    display: block;
+  }
 </style>

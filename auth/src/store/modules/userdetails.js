@@ -103,7 +103,7 @@ const getters = {
 	 * @returns {string|Object.value|Token.value|CancelToken|string}
 	 */
 	getToken (state) {
-		return state.token
+		return 'Bearer ' +state.token
 	},
 	/**
 	 * 获取用户的权限。
